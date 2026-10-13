@@ -1,0 +1,2292 @@
+<!DOCTYPE html>
+<html lang="id" data-bs-theme="light">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PSEUDOCODE - Media Pembelajaran Interaktif SMP Kelas IX</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Bootstrap 5 CSS CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css">
+    <!-- Google Fonts Inter & Fira Code -->
+    <link href="https://fonts.googleapis.com/css2?family=Fira+Code:wght@400;600&family=Inter:wght@300;400;600;700;800&display=swap" rel="stylesheet">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        brand: {
+                            50: '#f0f9ff',
+                            100: '#e0f2fe',
+                            500: '#0284c7',
+                            600: '#0369a1',
+                            700: '#075985',
+                        },
+                        funYellow: '#fef08a',
+                        funPurple: '#f3e8ff',
+                        funGreen: '#dcfce7'
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                        mono: ['Fira Code', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            touch-action: manipulation;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        /* Safari/iOS: field input tidak bisa diketik jika user-select: none diwariskan */
+        input, textarea, select {
+            user-select: text;
+            -webkit-user-select: text;
+        }
+        .code-font {
+            font-family: 'Fira Code', monospace;
+        }
+        .btn-ifp {
+            min-height: 52px;
+            font-weight: 600;
+        }
+        .touch-card {
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .touch-card:hover, .touch-card:active {
+            transform: translateY(-4px) scale(1.01);
+        }
+        .active-line {
+            background-color: rgba(251, 191, 36, 0.3) !important;
+            border-left: 5px solid #f59e0b;
+        }
+        .glass-card {
+            background: rgba(255, 255, 255, 0.9);
+            backdrop-filter: blur(10px);
+            border: 1px solid rgba(226, 232, 240, 0.8);
+        }
+        .dark .glass-card {
+            background: rgba(30, 41, 59, 0.9);
+            border: 1px solid rgba(51, 65, 85, 0.8);
+        }
+        .draggable-item {
+            cursor: grab;
+            touch-action: none;
+        }
+        .draggable-item:active {
+            cursor: grabbing;
+        }
+    </style>
+</head>
+<body class="bg-sky-50/50 dark:bg-slate-900 text-slate-800 dark:text-slate-100 min-h-screen flex flex-col transition-colors duration-300">
+
+    <!-- TOP NAVIGATION BAR -->
+    <header class="sticky top-0 z-50 bg-white/90 dark:bg-slate-800/90 backdrop-blur-md border-b border-sky-100 dark:border-slate-700 shadow-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-20 py-3">
+
+                <!-- Logo & Title -->
+                <div class="flex items-center space-x-3 cursor-pointer" onclick="showPage('beranda')">
+                    <div class="w-12 h-12 rounded-2xl bg-gradient-to-tr from-sky-500 to-indigo-600 flex items-center justify-center text-white shadow-md shadow-sky-500/30">
+                        <i class="fa-solid fa-code text-2xl"></i>
+                    </div>
+                    <div>
+                        <h1 class="font-extrabold text-xl sm:text-2xl tracking-tight text-sky-900 dark:text-sky-300">PSEUDOCODE</h1>
+                        <p class="text-xs font-semibold text-sky-600 dark:text-sky-400">Informatika Kelas IX SMP</p>
+                    </div>
+                </div>
+
+                <!-- Desktop Navigation Links -->
+                <nav class="hidden lg:flex items-center space-x-1 bg-sky-100/70 dark:bg-slate-900/60 p-1.5 rounded-2xl border border-sky-200/60 dark:border-slate-700">
+                    <button onclick="showPage('beranda')" id="nav-beranda" class="nav-btn px-3.5 py-2 text-sm font-bold rounded-xl text-sky-700 dark:text-sky-300 hover:bg-white dark:hover:bg-slate-800 transition-all">BERANDA</button>
+                    <button onclick="showPage('materi')" id="nav-materi" class="nav-btn px-3.5 py-2 text-sm font-bold rounded-xl text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-all">MATERI</button>
+                    <button onclick="showPage('contoh')" id="nav-contoh" class="nav-btn px-3.5 py-2 text-sm font-bold rounded-xl text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-all">CONTOH</button>
+                    <button onclick="showPage('simulasi')" id="nav-simulasi" class="nav-btn px-3.5 py-2 text-sm font-bold rounded-xl text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-all">SIMULASI</button>
+                    <button onclick="showPage('game')" id="nav-game" class="nav-btn px-3.5 py-2 text-sm font-bold rounded-xl text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-all">GAME</button>
+                    <button onclick="showPage('latihan')" id="nav-latihan" class="nav-btn px-3.5 py-2 text-sm font-bold rounded-xl text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-all">LATIHAN</button>
+                    <button onclick="showPage('kuis')" id="nav-kuis" class="nav-btn px-3.5 py-2 text-sm font-bold rounded-xl text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-all">KUIS</button>
+                    <button onclick="showPage('hasil')" id="nav-hasil" class="nav-btn px-3.5 py-2 text-sm font-bold rounded-xl text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-all">HASIL</button>
+                </nav>
+
+                <!-- Quick Action Utilities -->
+                <div class="flex items-center space-x-2">
+                    <button onclick="showPage('guru')" id="nav-guru" class="nav-btn w-10 h-10 rounded-xl bg-sky-100 dark:bg-slate-700 text-sky-700 dark:text-sky-300 flex items-center justify-center hover:bg-sky-200 transition-all" title="Halaman Guru">
+                        <i class="fa-solid fa-user-shield"></i>
+                    </button>
+                    <button onclick="toggleAudio()" class="w-10 h-10 rounded-xl bg-sky-100 dark:bg-slate-700 text-sky-700 dark:text-sky-300 flex items-center justify-center hover:bg-sky-200 transition-all" title="Audio Effects">
+                        <i id="audio-icon" class="fa-solid fa-volume-high"></i>
+                    </button>
+                    <button onclick="toggleDarkMode()" class="w-10 h-10 rounded-xl bg-sky-100 dark:bg-slate-700 text-sky-700 dark:text-sky-300 flex items-center justify-center hover:bg-sky-200 transition-all" title="Dark/Light Mode">
+                        <i class="fa-solid fa-moon"></i>
+                    </button>
+                    <button onclick="toggleMobileMenu()" class="lg:hidden w-10 h-10 rounded-xl bg-sky-100 dark:bg-slate-700 text-sky-700 dark:text-sky-300 flex items-center justify-center">
+                        <i class="fa-solid fa-bars text-lg"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Drawer Menu -->
+        <div id="mobile-menu" class="hidden lg:hidden bg-white dark:bg-slate-800 border-b border-sky-100 dark:border-slate-700 px-4 py-3 space-y-2">
+            <button onclick="showPage('beranda'); toggleMobileMenu()" class="w-full text-left py-2 px-3 rounded-lg font-bold text-sky-700 dark:text-sky-300">BERANDA</button>
+            <button onclick="showPage('materi'); toggleMobileMenu()" class="w-full text-left py-2 px-3 rounded-lg font-bold text-slate-700 dark:text-slate-300">MATERI</button>
+            <button onclick="showPage('contoh'); toggleMobileMenu()" class="w-full text-left py-2 px-3 rounded-lg font-bold text-slate-700 dark:text-slate-300">CONTOH</button>
+            <button onclick="showPage('simulasi'); toggleMobileMenu()" class="w-full text-left py-2 px-3 rounded-lg font-bold text-slate-700 dark:text-slate-300">SIMULASI</button>
+            <button onclick="showPage('game'); toggleMobileMenu()" class="w-full text-left py-2 px-3 rounded-lg font-bold text-slate-700 dark:text-slate-300">GAME</button>
+            <button onclick="showPage('latihan'); toggleMobileMenu()" class="w-full text-left py-2 px-3 rounded-lg font-bold text-slate-700 dark:text-slate-300">LATIHAN</button>
+            <button onclick="showPage('kuis'); toggleMobileMenu()" class="w-full text-left py-2 px-3 rounded-lg font-bold text-slate-700 dark:text-slate-300">KUIS</button>
+            <button onclick="showPage('hasil'); toggleMobileMenu()" class="w-full text-left py-2 px-3 rounded-lg font-bold text-slate-700 dark:text-slate-300">HASIL</button>
+            <button onclick="showPage('guru'); toggleMobileMenu()" class="w-full text-left py-2 px-3 rounded-lg font-bold text-slate-700 dark:text-slate-300">GURU</button>
+        </div>
+
+        <!-- Global Progress Bar -->
+        <div class="w-full bg-sky-100 dark:bg-slate-900 h-2">
+            <div id="global-progress-bar" class="bg-gradient-to-r from-sky-400 to-indigo-500 h-full w-0 transition-all duration-500"></div>
+        </div>
+    </header>
+
+    <main class="flex-grow max-w-7xl w-full mx-auto p-4 sm:p-6 lg:p-8">
+
+        <!-- 1. HALAMAN BERANDA -->
+        <section id="page-beranda" class="page-view block space-y-8 animate-fadeIn">
+            <!-- Hero Banner -->
+            <div class="relative overflow-hidden rounded-3xl bg-gradient-to-r from-sky-500 via-indigo-500 to-purple-600 text-white p-8 sm:p-12 shadow-2xl shadow-sky-500/20">
+                <div class="relative z-10 max-w-2xl space-y-4">
+                    <span class="inline-flex items-center px-3.5 py-1.5 rounded-full text-xs font-extrabold bg-white/20 backdrop-blur-md text-white border border-white/30 uppercase tracking-wider">
+                        ✨ Media Pembelajaran Interaktif
+                    </span>
+                    <h2 class="text-3xl sm:text-5xl font-black leading-tight tracking-tight">
+                        Belajar Menuliskan Algoritma dengan Mudah!
+                    </h2>
+                    <p class="text-sky-100 text-base sm:text-lg leading-relaxed font-medium">
+                        Pseudocode adalah cara menuliskan langkah-langkah algoritma menggunakan bahasa sederhana dan terstruktur agar mudah dipahami oleh manusia.
+                    </p>
+                    <div class="pt-4 flex flex-wrap gap-3">
+                        <button onclick="showPage('materi')" class="btn-ifp px-6 py-3 bg-yellow-400 hover:bg-yellow-300 text-slate-900 rounded-2xl font-black text-base shadow-lg shadow-yellow-400/30 flex items-center space-x-2 transition-all">
+                            <i class="fa-solid fa-play"></i>
+                            <span>MULAI BELAJAR</span>
+                        </button>
+                        <button onclick="showPage('materi')" class="btn-ifp px-6 py-3 bg-white/20 hover:bg-white/30 text-white rounded-2xl font-bold text-base backdrop-blur-md border border-white/40 transition-all">
+                            LIHAT MATERI
+                        </button>
+                        <button onclick="showPage('kuis')" class="btn-ifp px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-white rounded-2xl font-bold text-base shadow-lg shadow-emerald-500/30 transition-all">
+                            COBA KUIS
+                        </button>
+                    </div>
+                </div>
+                <!-- Background Graphic Element -->
+                <div class="absolute -right-10 -bottom-10 opacity-20 pointer-events-none hidden md:block">
+                    <i class="fa-solid fa-laptop-code text-[280px]"></i>
+                </div>
+            </div>
+
+            <!-- Quick Action Cards Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                <div onclick="showPage('materi')" class="touch-card cursor-pointer p-6 rounded-3xl bg-white dark:bg-slate-800 border border-sky-100 dark:border-slate-700 shadow-xl shadow-sky-100/50 dark:shadow-none space-y-3">
+                    <div class="w-14 h-14 rounded-2xl bg-sky-100 dark:bg-sky-900/50 text-sky-600 dark:text-sky-400 flex items-center justify-center text-2xl font-bold">
+                        📖
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-white">Pelajari Materi</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Pahami konsep dasar, fungsi, struktur, BEGIN-END, hingga INPUT-OUTPUT.</p>
+                </div>
+
+                <div onclick="showPage('contoh')" class="touch-card cursor-pointer p-6 rounded-3xl bg-white dark:bg-slate-800 border border-purple-100 dark:border-slate-700 shadow-xl shadow-purple-100/50 dark:shadow-none space-y-3">
+                    <div class="w-14 h-14 rounded-2xl bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-400 flex items-center justify-center text-2xl font-bold">
+                        💡
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-white">Lihat Contoh</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Lihat contoh nyata pseudocode lengkap dengan animasi jalannya program.</p>
+                </div>
+
+                <div onclick="showPage('simulasi')" class="touch-card cursor-pointer p-6 rounded-3xl bg-white dark:bg-slate-800 border border-emerald-100 dark:border-slate-700 shadow-xl shadow-emerald-100/50 dark:shadow-none space-y-3">
+                    <div class="w-14 h-14 rounded-2xl bg-emerald-100 dark:bg-emerald-900/50 text-emerald-600 dark:text-emerald-400 flex items-center justify-center text-2xl font-bold">
+                        🧩
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-white">Coba Simulasi</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Gunakan Pseudocode Runner untuk menguji algoritma buatanmu secara langsung.</p>
+                </div>
+
+                <div onclick="showPage('kuis')" class="touch-card cursor-pointer p-6 rounded-3xl bg-white dark:bg-slate-800 border border-amber-100 dark:border-slate-700 shadow-xl shadow-amber-100/50 dark:shadow-none space-y-3">
+                    <div class="w-14 h-14 rounded-2xl bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-400 flex items-center justify-center text-2xl font-bold">
+                        🎯
+                    </div>
+                    <h3 class="text-xl font-bold text-slate-800 dark:text-white">Uji Pemahaman</h3>
+                    <p class="text-sm text-slate-500 dark:text-slate-400">Uji pengetahuanmu melalui kuis interaktif 15 soal dan dapatkan sertifikat!</p>
+                </div>
+            </div>
+
+            <!-- Learning Objectives Box -->
+            <div class="bg-white dark:bg-slate-800 p-8 rounded-3xl border border-sky-100 dark:border-slate-700 shadow-lg space-y-4">
+                <h3 class="text-xl font-black text-slate-800 dark:text-white flex items-center space-x-2">
+                    <i class="fa-solid fa-bullseye text-sky-500"></i>
+                    <span>Tujuan Pembelajaran (Informatika Kelas IX)</span>
+                </h3>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm text-slate-600 dark:text-slate-300">
+                    <div class="flex items-start space-x-2">
+                        <i class="fa-solid fa-circle-check text-emerald-500 mt-1"></i>
+                        <span>Memahami pengertian dan fungsi pseudocode dalam pemrograman.</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i class="fa-solid fa-circle-check text-emerald-500 mt-1"></i>
+                        <span>Membedakan antara algoritma kalimat deskriptif dan pseudocode.</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i class="fa-solid fa-circle-check text-emerald-500 mt-1"></i>
+                        <span>Memahami struktur dasar pseudocode: BEGIN, INPUT, PROCESS, OUTPUT, END.</span>
+                    </div>
+                    <div class="flex items-start space-x-2">
+                        <i class="fa-solid fa-circle-check text-emerald-500 mt-1"></i>
+                        <span>Mampu membaca dan menyusun pseudocode sederhana secara tepat.</span>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 2. HALAMAN MATERI (6 MODUL) -->
+        <section id="page-materi" class="page-view hidden space-y-6">
+            <!-- Navigation Tabs for Modules -->
+            <div class="flex flex-wrap gap-2 p-2 bg-white dark:bg-slate-800 rounded-2xl border border-sky-100 dark:border-slate-700 shadow-sm overflow-x-auto">
+                <button onclick="loadModul(1)" id="mod-tab-1" class="mod-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-sky-500 text-white shadow">Materi 1: Pengertian</button>
+                <button onclick="loadModul(2)" id="mod-tab-2" class="mod-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">Materi 2: Fungsi</button>
+                <button onclick="loadModul(3)" id="mod-tab-3" class="mod-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">Materi 3: Algoritma vs Pseudocode</button>
+                <button onclick="loadModul(4)" id="mod-tab-4" class="mod-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">Materi 4: Struktur Dasar</button>
+                <button onclick="loadModul(5)" id="mod-tab-5" class="mod-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">Materi 5: BEGIN & END</button>
+                <button onclick="loadModul(6)" id="mod-tab-6" class="mod-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300">Materi 6: INPUT & OUTPUT</button>
+            </div>
+
+            <!-- Material Card Container -->
+            <div id="materi-display-box" class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-sky-100 dark:border-slate-700 shadow-xl space-y-6">
+                <!-- Content injected dynamically via JS -->
+            </div>
+        </section>
+
+        <!-- 3. HALAMAN CONTOH -->
+        <section id="page-contoh" class="page-view hidden space-y-6">
+            <div class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-3xl p-6 text-white shadow-xl">
+                <h2 class="text-2xl font-black">💡 Contoh-Contoh Pseudocode</h2>
+                <p class="text-purple-100 text-sm mt-1">Ubah nilai <b>INPUT</b> jika mau, lalu klik tombol <b>▶ JALANKAN</b> untuk melihat eksekusi baris demi baris beserta nilai variabelnya!</p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                <!-- Contoh 1 -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-sky-100 dark:border-slate-700 shadow-lg space-y-4">
+                    <h3 class="font-extrabold text-lg text-slate-800 dark:text-white flex items-center justify-between">
+                        <span>Contoh 1 — Menampilkan Nama</span>
+                        <span class="px-2.5 py-1 bg-sky-100 dark:bg-sky-900/50 text-sky-600 dark:text-sky-300 text-xs rounded-full">Sederhana</span>
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Menerima masukan sebuah nama, kemudian menampilkan nama tersebut kembali ke layar.</p>
+                    <div id="demo-code-1" class="bg-slate-900 p-4 rounded-2xl font-mono text-xs text-sky-300 space-y-1">
+                        <div id="demo1-line1">BEGIN</div>
+                        <div id="demo1-line2" class="pl-4">INPUT nama</div>
+                        <div id="demo1-line3" class="pl-4">OUTPUT nama</div>
+                        <div id="demo1-line4">END</div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nilai INPUT (boleh diubah):</p>
+                        <div id="demo1-inputs" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <div id="demo1-trace" class="text-xs font-mono text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-900 rounded-xl p-3 min-h-[2.5rem] space-y-0.5"></div>
+                    <div class="flex items-center justify-between pt-2">
+                        <button onclick="runDemo(1)" class="btn-ifp px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-500/30 flex items-center space-x-2">
+                            <i class="fa-solid fa-play"></i>
+                            <span>▶ JALANKAN</span>
+                        </button>
+                        <div id="demo1-output" class="text-xs font-bold text-amber-500">Output: -</div>
+                    </div>
+                </div>
+
+                <!-- Contoh 2 (Lengkap) -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-sky-100 dark:border-slate-700 shadow-lg space-y-4">
+                    <h3 class="font-extrabold text-lg text-slate-800 dark:text-white flex items-center justify-between">
+                        <span>Contoh 2 — Menghitung Luas Persegi</span>
+                        <span class="px-2.5 py-1 bg-purple-100 dark:bg-purple-900/50 text-purple-600 dark:text-purple-300 text-xs rounded-full">Perhitungan</span>
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Menerima masukan panjang sisi, menghitung luas persegi, lalu menampilkan hasilnya.</p>
+                    <div id="demo-code-2" class="bg-slate-900 p-4 rounded-2xl font-mono text-xs text-sky-300 space-y-1">
+                        <div id="demo2-line1">BEGIN</div>
+                        <div id="demo2-line2" class="pl-4">INPUT sisi</div>
+                        <div id="demo2-line3" class="pl-4">luas ← sisi * sisi</div>
+                        <div id="demo2-line4" class="pl-4">OUTPUT luas</div>
+                        <div id="demo2-line5">END</div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nilai INPUT (boleh diubah):</p>
+                        <div id="demo2-inputs" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <div id="demo2-trace" class="text-xs font-mono text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-900 rounded-xl p-3 min-h-[2.5rem] space-y-0.5"></div>
+                    <div class="flex items-center justify-between pt-2">
+                        <button onclick="runDemo(2)" class="btn-ifp px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-500/30 flex items-center space-x-2">
+                            <i class="fa-solid fa-play"></i>
+                            <span>▶ JALANKAN</span>
+                        </button>
+                        <div id="demo2-output" class="text-xs font-bold text-amber-500">Output: -</div>
+                    </div>
+                </div>
+
+                <!-- Contoh 3 -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-sky-100 dark:border-slate-700 shadow-lg space-y-4">
+                    <h3 class="font-extrabold text-lg text-slate-800 dark:text-white flex items-center justify-between">
+                        <span>Contoh 3 — Menghitung Penjumlahan</span>
+                        <span class="px-2.5 py-1 bg-amber-100 dark:bg-amber-900/50 text-amber-600 dark:text-amber-300 text-xs rounded-full">Aritmatika</span>
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Menerima dua angka masukan, menjumlahkannya, dan menampilkan hasil penjumlahan.</p>
+                    <div id="demo-code-3" class="bg-slate-900 p-4 rounded-2xl font-mono text-xs text-sky-300 space-y-1">
+                        <div id="demo3-line1">BEGIN</div>
+                        <div id="demo3-line2" class="pl-4">INPUT a</div>
+                        <div id="demo3-line3" class="pl-4">INPUT b</div>
+                        <div id="demo3-line4" class="pl-4">hasil ← a + b</div>
+                        <div id="demo3-line5" class="pl-4">OUTPUT hasil</div>
+                        <div id="demo3-line6">END</div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nilai INPUT (boleh diubah):</p>
+                        <div id="demo3-inputs" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <div id="demo3-trace" class="text-xs font-mono text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-900 rounded-xl p-3 min-h-[2.5rem] space-y-0.5"></div>
+                    <div class="flex items-center justify-between pt-2">
+                        <button onclick="runDemo(3)" class="btn-ifp px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-500/30 flex items-center space-x-2">
+                            <i class="fa-solid fa-play"></i>
+                            <span>▶ JALANKAN</span>
+                        </button>
+                        <div id="demo3-output" class="text-xs font-bold text-amber-500">Output: -</div>
+                    </div>
+                </div>
+
+                <!-- Contoh 4 -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-sky-100 dark:border-slate-700 shadow-lg space-y-4">
+                    <h3 class="font-extrabold text-lg text-slate-800 dark:text-white flex items-center justify-between">
+                        <span>Contoh 4 — Menghitung Keliling Persegi Panjang</span>
+                        <span class="px-2.5 py-1 bg-indigo-100 dark:bg-indigo-900/50 text-indigo-600 dark:text-indigo-300 text-xs rounded-full">Geometri</span>
+                    </h3>
+                    <p class="text-xs text-slate-500 dark:text-slate-400">Menerima masukan panjang dan lebar, lalu menghitung keliling bangun datar.</p>
+                    <div id="demo-code-4" class="bg-slate-900 p-4 rounded-2xl font-mono text-xs text-sky-300 space-y-1">
+                        <div id="demo4-line1">BEGIN</div>
+                        <div id="demo4-line2" class="pl-4">INPUT panjang</div>
+                        <div id="demo4-line3" class="pl-4">INPUT lebar</div>
+                        <div id="demo4-line4" class="pl-4">keliling ← 2 * (panjang + lebar)</div>
+                        <div id="demo4-line5" class="pl-4">OUTPUT keliling</div>
+                        <div id="demo4-line6">END</div>
+                    </div>
+                    <div class="space-y-1.5">
+                        <p class="text-[11px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nilai INPUT (boleh diubah):</p>
+                        <div id="demo4-inputs" class="flex flex-wrap gap-2"></div>
+                    </div>
+                    <div id="demo4-trace" class="text-xs font-mono text-slate-600 dark:text-slate-300 bg-slate-100 dark:bg-slate-900 rounded-xl p-3 min-h-[2.5rem] space-y-0.5"></div>
+                    <div class="flex items-center justify-between pt-2">
+                        <button onclick="runDemo(4)" class="btn-ifp px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-xs font-bold shadow-md shadow-emerald-500/30 flex items-center space-x-2">
+                            <i class="fa-solid fa-play"></i>
+                            <span>▶ JALANKAN</span>
+                        </button>
+                        <div id="demo4-output" class="text-xs font-bold text-amber-500">Output: -</div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 4. HALAMAN SIMULASI -->
+        <section id="page-simulasi" class="page-view hidden space-y-6">
+            <div class="bg-slate-900 text-white rounded-3xl p-6 sm:p-8 border border-slate-700 shadow-2xl space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-800 pb-4">
+                    <div>
+                        <h2 class="text-2xl font-black text-sky-400 flex items-center space-x-2">
+                            <i class="fa-solid fa-terminal"></i>
+                            <span>Pseudocode Runner (Simulator Code)</span>
+                        </h2>
+                        <p class="text-xs text-slate-400">Uji coba penulisan pseudocode kamu pada editor di bawah ini.</p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="runSimulasi()" class="btn-ifp px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-xs font-bold shadow-lg shadow-emerald-500/30 flex items-center space-x-1.5">
+                            <i class="fa-solid fa-play"></i>
+                            <span>▶ JALANKAN</span>
+                        </button>
+                        <button onclick="resetSimulasi()" class="btn-ifp px-4 py-2.5 bg-slate-800 hover:bg-slate-700 text-slate-300 rounded-xl text-xs font-bold border border-slate-700">
+                            🔄 RESET
+                        </button>
+                        <button onclick="petunjukSimulasi()" class="btn-ifp px-4 py-2.5 bg-sky-600 hover:bg-sky-500 text-white rounded-xl text-xs font-bold">
+                            💡 PETUNJUK
+                        </button>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Code Editor Box -->
+                    <div class="space-y-2">
+                        <label class="text-xs font-mono text-sky-400 uppercase tracking-wider block font-bold">Editor Pseudocode:</label>
+                        <textarea id="sim-editor" spellcheck="false" class="w-full h-64 p-4 bg-slate-950 text-sky-300 font-mono text-xs rounded-2xl border border-slate-800 focus:outline-none focus:border-sky-500 leading-relaxed resize-none">BEGIN
+INPUT nama
+OUTPUT nama
+END</textarea>
+                    </div>
+
+                    <!-- Console & Output Box -->
+                    <div class="space-y-2 flex flex-col">
+                        <label class="text-xs font-mono text-emerald-400 uppercase tracking-wider block font-bold">Console Terminal Output:</label>
+                        <div id="sim-console" class="flex-grow min-h-[16rem] max-h-80 p-4 bg-slate-950 text-emerald-400 font-mono text-xs rounded-2xl border border-slate-800 leading-relaxed overflow-y-auto">
+                            <p class="text-slate-500">// Klik ▶ JALANKAN untuk memulai simulasi...</p>
+                        </div>
+
+                        <!-- Interactive Input Form Modal (Dynamic) -->
+                        <div id="sim-input-box" class="hidden p-4 bg-slate-800 rounded-2xl border border-sky-500/40 space-y-3">
+                            <span id="sim-input-label" class="text-xs text-sky-300 font-mono font-bold block">> Program membutuhkan data masukan (INPUT):</span>
+                            <div class="flex gap-2">
+                                <input type="text" id="sim-input-value" autocomplete="off" onkeydown="if(event.key==='Enter') submitSimInput()" class="flex-grow p-2.5 bg-slate-950 border border-slate-700 rounded-xl text-xs text-white font-mono focus:outline-none" placeholder="Masukkan nilai...">
+                                <button onclick="submitSimInput()" class="px-4 py-2 bg-sky-500 hover:bg-sky-400 text-white text-xs font-bold rounded-xl">
+                                    KIRIM
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- 5. HALAMAN GAME -->
+        <section id="page-game" class="page-view hidden space-y-6">
+            <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-sky-100 dark:border-slate-700 shadow-xl space-y-6">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-sky-100 dark:border-slate-700 pb-4">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-800 dark:text-white flex items-center space-x-2">
+                            <span>🧩 Game — Susun Pseudocode</span>
+                        </h2>
+                        <p class="text-xs text-slate-500">Klik/Sentuh potongan baris kode di kiri untuk memindahkannya ke area urutan yang benar di kanan!</p>
+                    </div>
+                    <div class="flex items-center space-x-3">
+                        <span class="text-xs font-bold text-slate-400">SKOR GAME:</span>
+                        <span id="game-score" class="text-2xl font-black text-amber-500">0</span>
+                    </div>
+                </div>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                    <!-- Source Potongan Kode -->
+                    <div class="space-y-3">
+                        <h4 class="font-bold text-slate-700 dark:text-slate-300 text-sm">Potongan Kode (Diacak):</h4>
+                        <div id="game-source-container" class="p-4 bg-sky-50 dark:bg-slate-900 rounded-2xl border border-sky-100 dark:border-slate-700 min-h-[16rem] space-y-2">
+                            <!-- Injected JS -->
+                        </div>
+                    </div>
+
+                    <!-- Target Urutan Jawaban -->
+                    <div class="space-y-3">
+                        <h4 class="font-bold text-slate-700 dark:text-slate-300 text-sm">Urutan Pseudocode Kamu:</h4>
+                        <div id="game-target-container" class="p-4 bg-emerald-50/50 dark:bg-slate-900 rounded-2xl border border-emerald-200 dark:border-slate-700 min-h-[16rem] space-y-2">
+                            <!-- Injected JS -->
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-wrap items-center justify-between gap-4 pt-4 border-t border-sky-100 dark:border-slate-700">
+                    <button onclick="resetGame()" class="btn-ifp px-5 py-2.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold">
+                        🔄 ACAK ULANG
+                    </button>
+                    <button onclick="checkGameOrder()" class="btn-ifp px-8 py-3 bg-emerald-500 hover:bg-emerald-400 text-white font-black text-sm rounded-2xl shadow-lg shadow-emerald-500/30">
+                        PERIKSA URUTAN <i class="fa-solid fa-check ml-1"></i>
+                    </button>
+                </div>
+
+                <div id="game-feedback" class="hidden"></div>
+            </div>
+        </section>
+
+        <!-- 6. HALAMAN LATIHAN -->
+        <section id="page-latihan" class="page-view hidden space-y-6">
+            <div class="bg-gradient-to-r from-sky-500 to-indigo-600 rounded-3xl p-6 text-white shadow-xl">
+                <h2 class="text-2xl font-black">📝 Soal Latihan Formatif</h2>
+                <p class="text-sky-100 text-sm mt-1">Uji kemampuan pemahamanmu dengan 10 soal formatif interaktif berikut.</p>
+            </div>
+
+            <div id="latihan-questions-container" class="space-y-6">
+                <!-- Injected via JS -->
+            </div>
+        </section>
+
+        <!-- 7. HALAMAN KUIS -->
+        <section id="page-kuis" class="page-view hidden space-y-6">
+            <!-- Start Quiz Registration Box -->
+            <div id="kuis-start-card" class="bg-white dark:bg-slate-800 rounded-3xl p-8 border border-sky-100 dark:border-slate-700 shadow-xl max-w-xl mx-auto text-center space-y-6">
+                <div class="w-16 h-16 rounded-3xl bg-amber-100 text-amber-600 flex items-center justify-center text-3xl mx-auto font-bold shadow-md">
+                    🎯
+                </div>
+                <div class="space-y-2">
+                    <h2 class="text-2xl font-black text-slate-800 dark:text-white">Kuis Akhir Pseudocode</h2>
+                    <p class="text-xs text-slate-500">Kuis terdiri dari 15 soal pilihan ganda. Isikan nama dan kelasmu untuk memulai! Hasilnya akan dikirim ke gurumu.</p>
+                </div>
+
+                <div class="space-y-2 text-left">
+                    <label for="student-name-input" class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Nama Lengkap Siswa:</label>
+                    <input type="text" id="student-name-input" maxlength="60" autocomplete="off" class="w-full px-4 py-3 bg-sky-50 dark:bg-slate-900 border border-sky-200 dark:border-slate-700 rounded-2xl font-bold text-slate-800 dark:text-white focus:outline-none focus:border-sky-500" placeholder="Ketik nama lengkapmu di sini...">
+                </div>
+
+                <div class="space-y-2 text-left">
+                    <label for="student-class-input" class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">Kelas:</label>
+                    <input type="text" id="student-class-input" maxlength="20" autocomplete="off" class="w-full px-4 py-3 bg-sky-50 dark:bg-slate-900 border border-sky-200 dark:border-slate-700 rounded-2xl font-bold text-slate-800 dark:text-white focus:outline-none focus:border-sky-500" placeholder="Contoh: IX-A">
+                </div>
+
+                <div id="kuis-start-error" class="hidden p-3 rounded-xl bg-rose-100 text-rose-800 text-xs font-bold text-left"></div>
+
+                <button onclick="startQuiz()" class="btn-ifp w-full py-4 bg-gradient-to-r from-sky-500 to-indigo-600 hover:from-sky-400 hover:to-indigo-500 text-white font-black text-lg rounded-2xl shadow-xl shadow-sky-500/30">
+                    MULAI KUIS SEKARANG
+                </button>
+            </div>
+
+            <!-- Active Quiz Window -->
+            <div id="kuis-active-card" class="hidden bg-white dark:bg-slate-800 rounded-3xl p-6 sm:p-8 border border-sky-100 dark:border-slate-700 shadow-xl space-y-6">
+                <!-- Quiz Header -->
+                <div class="flex items-center justify-between border-b border-sky-100 dark:border-slate-700 pb-4">
+                    <div>
+                        <span id="quiz-progress-text" class="text-xs font-bold text-sky-600 dark:text-sky-400 uppercase tracking-wider">Soal 1 dari 15</span>
+                        <h3 id="quiz-student-display" class="text-sm font-extrabold text-slate-700 dark:text-slate-200">Siswa: -</h3>
+                    </div>
+                    <div class="text-right">
+                        <span id="quiz-live-label" class="text-xs text-slate-400 block font-semibold">TERJAWAB</span>
+                        <span id="quiz-live-score" class="text-xl font-black text-sky-600 dark:text-sky-400">0/15</span>
+                    </div>
+                </div>
+
+                <!-- Navigator Soal -->
+                <div>
+                    <p class="text-xs text-slate-500 dark:text-slate-400 mb-2">Pilih nomor soal untuk berpindah. Kamu boleh mengerjakan dalam urutan apa saja dan mengubah jawaban sebelum dikumpulkan.</p>
+                    <div id="quiz-nav" class="flex flex-wrap gap-2"></div>
+                </div>
+
+                <!-- Quiz Question Content -->
+                <div class="space-y-4">
+                    <h3 id="quiz-question-title" class="text-lg sm:text-xl font-bold text-slate-800 dark:text-white leading-snug">
+                        <!-- Question text -->
+                    </h3>
+
+                    <!-- Quiz Options Container -->
+                    <div id="quiz-options-box" class="grid grid-cols-1 gap-3">
+                        <!-- Injected JS -->
+                    </div>
+                </div>
+
+                <!-- Quiz Footer Buttons -->
+                <div class="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-sky-100 dark:border-slate-700">
+                    <div class="flex gap-2">
+                        <button id="quiz-prev-btn" onclick="prevQuizStep()" class="btn-ifp px-5 py-3 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 font-bold text-sm rounded-2xl disabled:opacity-40 disabled:cursor-not-allowed">
+                            <i class="fa-solid fa-arrow-left mr-2"></i>SEBELUMNYA
+                        </button>
+                        <button id="quiz-next-btn" onclick="nextQuizStep()" class="btn-ifp px-5 py-3 bg-sky-500 hover:bg-sky-400 text-white font-bold text-sm rounded-2xl shadow-lg shadow-sky-500/30 disabled:opacity-40 disabled:cursor-not-allowed">
+                            SELANJUTNYA<i class="fa-solid fa-arrow-right ml-2"></i>
+                        </button>
+                    </div>
+                    <button onclick="confirmSubmit()" class="btn-ifp px-6 py-3 bg-emerald-500 hover:bg-emerald-400 text-white font-black text-sm rounded-2xl shadow-lg shadow-emerald-500/30">
+                        KUMPULKAN JAWABAN <i class="fa-solid fa-paper-plane ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 8. HALAMAN HASIL KUIS & SERTIFIKAT -->
+        <section id="page-hasil" class="page-view hidden space-y-6">
+            <div id="no-result-msg" class="bg-white dark:bg-slate-800 rounded-3xl p-12 text-center border border-sky-100 dark:border-slate-700 shadow-xl space-y-4">
+                <i class="fa-solid fa-clipboard-question text-6xl text-sky-300"></i>
+                <h3 class="text-xl font-bold text-slate-700 dark:text-slate-200">Belum Ada Hasil Kuis</h3>
+                <p class="text-slate-500 text-sm">Kamu belum menyelesaikan Kuis Akhir. Selesaikan kuis terlebih dahulu untuk melihat hasil dan sertifikatmu!</p>
+                <button onclick="showPage('kuis')" class="btn-ifp px-6 py-3 bg-sky-500 text-white rounded-2xl font-bold">KERJAKAN KUIS</button>
+            </div>
+
+            <!-- Result Card -->
+            <div id="result-card" class="hidden bg-white dark:bg-slate-800 rounded-3xl p-8 border border-sky-100 dark:border-slate-700 shadow-2xl space-y-8 max-w-3xl mx-auto">
+                <div class="text-center space-y-3">
+                    <span id="result-badge" class="px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-100 text-emerald-700">
+                        🌟 Sangat Baik
+                    </span>
+                    <h2 class="text-3xl font-black text-slate-800 dark:text-white">🎉 HASIL KUIS AKHIR</h2>
+                    <p id="result-student-name" class="text-lg font-bold text-sky-600 dark:text-sky-400">Nama Siswa</p>
+                    <p id="result-student-meta" class="text-xs font-semibold text-slate-500 dark:text-slate-400"></p>
+                </div>
+
+                <!-- Status pengiriman ke guru -->
+                <div id="submit-status" class="p-3 rounded-2xl text-xs font-bold text-center"></div>
+
+                <!-- Score Breakdown Grid -->
+                <div class="grid grid-cols-3 gap-4 text-center">
+                    <div class="p-4 bg-sky-50 dark:bg-slate-900 rounded-2xl border border-sky-100 dark:border-slate-700">
+                        <span class="text-xs text-slate-400 font-bold block">SKOR TOTAL</span>
+                        <span id="res-score" class="text-3xl font-black text-sky-600 dark:text-sky-400">85/100</span>
+                    </div>
+                    <div class="p-4 bg-emerald-50 dark:bg-slate-900 rounded-2xl border border-emerald-100 dark:border-slate-700">
+                        <span class="text-xs text-slate-400 font-bold block">BENAR</span>
+                        <span id="res-correct" class="text-3xl font-black text-emerald-500">13</span>
+                    </div>
+                    <div class="p-4 bg-rose-50 dark:bg-slate-900 rounded-2xl border border-rose-100 dark:border-slate-700">
+                        <span class="text-xs text-slate-400 font-bold block">SALAH</span>
+                        <span id="res-wrong" class="text-3xl font-black text-rose-500">2</span>
+                    </div>
+                </div>
+
+                <!-- Review Jawaban -->
+                <div class="space-y-3">
+                    <h3 class="text-sm font-black text-slate-700 dark:text-slate-200 uppercase tracking-wider">Review Jawabanmu</h3>
+                    <div id="answer-review" class="space-y-2"></div>
+                </div>
+
+                <!-- Certificate Digital Preview -->
+                <div class="border-4 border-double border-amber-400 p-6 rounded-3xl bg-gradient-to-b from-amber-50/50 to-amber-100/30 dark:from-slate-900 dark:to-slate-900 text-center space-y-4 relative overflow-hidden">
+                    <div class="text-amber-500 font-bold text-xs uppercase tracking-widest">SERTIFIKAT KELULUSAN DIGITAL</div>
+                    <h3 class="text-xl font-extrabold text-slate-800 dark:text-amber-300">MEDIA PEMBELAJARAN PSEUDOCODE</h3>
+                    <p class="text-xs text-slate-600 dark:text-slate-400">Diberikan kepada:</p>
+                    <h4 id="cert-student-name" class="text-2xl font-black text-sky-700 dark:text-sky-300 underline">NAMA SISWA</h4>
+                    <p class="text-xs text-slate-600 dark:text-slate-400 max-w-md mx-auto">
+                        Telah berhasil menguasai materi Dasar Algoritma & Pseudocode pada mata pelajaran Informatika Kelas IX SMP.
+                    </p>
+                    <div class="text-[10px] text-slate-400 pt-2">Terverifikasi Sistem Pembelajaran Interaktif</div>
+                </div>
+
+                <div class="flex flex-wrap justify-center gap-4">
+                    <button onclick="showPage('kuis')" class="btn-ifp px-6 py-3 bg-sky-500 hover:bg-sky-400 text-white font-bold rounded-2xl shadow-lg">
+                        🔄 ULANGI KUIS
+                    </button>
+                    <button onclick="showPage('beranda')" class="btn-ifp px-6 py-3 bg-slate-700 hover:bg-slate-600 text-white font-bold rounded-2xl">
+                        🏠 KEMBALI KE BERANDA
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- 9. HALAMAN GURU -->
+        <section id="page-guru" class="page-view hidden space-y-6">
+            <!-- Gerbang PIN -->
+            <div id="guru-login" class="bg-white dark:bg-slate-800 rounded-3xl p-8 border border-sky-100 dark:border-slate-700 shadow-xl max-w-md mx-auto text-center space-y-5">
+                <div class="w-16 h-16 rounded-3xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-3xl mx-auto shadow-md">
+                    <i class="fa-solid fa-user-shield"></i>
+                </div>
+                <div class="space-y-1">
+                    <h2 class="text-2xl font-black text-slate-800 dark:text-white">Dashboard Guru</h2>
+                    <p class="text-xs text-slate-500">Masukkan PIN guru untuk melihat hasil kuis seluruh siswa.</p>
+                </div>
+                <input type="password" id="guru-pin-input" autocomplete="off" class="w-full px-4 py-3 bg-sky-50 dark:bg-slate-900 border border-sky-200 dark:border-slate-700 rounded-2xl font-bold text-center tracking-widest text-slate-800 dark:text-white focus:outline-none focus:border-sky-500" placeholder="PIN Guru" onkeydown="if(event.key==='Enter') loadGuruData()">
+                <div id="guru-error" class="hidden p-3 rounded-xl bg-rose-100 text-rose-800 text-xs font-bold"></div>
+                <button onclick="loadGuruData()" id="guru-login-btn" class="btn-ifp w-full py-3 bg-gradient-to-r from-sky-500 to-indigo-600 text-white font-black rounded-2xl shadow-lg">
+                    MASUK & MUAT DATA
+                </button>
+            </div>
+
+            <!-- Dashboard -->
+            <div id="guru-dashboard" class="hidden space-y-6">
+                <div class="flex flex-wrap items-center justify-between gap-3">
+                    <div>
+                        <h2 class="text-2xl font-black text-slate-800 dark:text-white">📊 Hasil Kuis Siswa</h2>
+                        <p id="guru-updated" class="text-xs text-slate-500"></p>
+                    </div>
+                    <div class="flex flex-wrap gap-2">
+                        <button onclick="loadGuruData(true)" class="btn-ifp px-4 py-2.5 bg-sky-500 hover:bg-sky-400 text-white rounded-xl text-xs font-bold">🔄 MUAT ULANG</button>
+                        <button onclick="exportGuruCSV()" class="btn-ifp px-4 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-xs font-bold">⬇ UNDUH CSV</button>
+                        <a id="guru-sheet-link" target="_blank" rel="noopener" class="hidden btn-ifp px-4 py-2.5 bg-amber-500 hover:bg-amber-400 text-white rounded-xl text-xs font-bold flex items-center">📄 BUKA SPREADSHEET</a>
+                        <button onclick="guruLogout()" class="btn-ifp px-4 py-2.5 bg-slate-200 dark:bg-slate-700 text-slate-700 dark:text-slate-200 rounded-xl text-xs font-bold">KELUAR</button>
+                    </div>
+                </div>
+
+                <!-- Ringkasan -->
+                <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 text-center">
+                    <div class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-sky-100 dark:border-slate-700 shadow">
+                        <span class="text-xs text-slate-400 font-bold block">PESERTA</span>
+                        <span id="gs-count" class="text-3xl font-black text-sky-600 dark:text-sky-400">0</span>
+                    </div>
+                    <div class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-sky-100 dark:border-slate-700 shadow">
+                        <span class="text-xs text-slate-400 font-bold block">RATA-RATA</span>
+                        <span id="gs-avg" class="text-3xl font-black text-indigo-600 dark:text-indigo-400">0</span>
+                    </div>
+                    <div class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-sky-100 dark:border-slate-700 shadow">
+                        <span class="text-xs text-slate-400 font-bold block">TERTINGGI</span>
+                        <span id="gs-max" class="text-3xl font-black text-emerald-500">0</span>
+                    </div>
+                    <div class="p-4 bg-white dark:bg-slate-800 rounded-2xl border border-sky-100 dark:border-slate-700 shadow">
+                        <span class="text-xs text-slate-400 font-bold block">TERENDAH</span>
+                        <span id="gs-min" class="text-3xl font-black text-rose-500">0</span>
+                    </div>
+                </div>
+
+                <!-- Filter -->
+                <div class="flex flex-col sm:flex-row gap-3">
+                    <input type="text" id="guru-search" oninput="renderGuruTable()" class="flex-grow px-4 py-2.5 bg-white dark:bg-slate-800 border border-sky-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none focus:border-sky-500" placeholder="Cari nama siswa...">
+                    <select id="guru-class-filter" onchange="renderGuruTable()" class="px-4 py-2.5 bg-white dark:bg-slate-800 border border-sky-200 dark:border-slate-700 rounded-xl text-sm focus:outline-none">
+                        <option value="">Semua kelas</option>
+                    </select>
+                </div>
+
+                <!-- Tabel -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl border border-sky-100 dark:border-slate-700 shadow-xl overflow-x-auto">
+                    <table class="w-full text-left text-xs">
+                        <thead>
+                            <tr class="bg-sky-100 dark:bg-slate-700 text-sky-900 dark:text-sky-200">
+                                <th class="p-3">No</th>
+                                <th class="p-3">Nama</th>
+                                <th class="p-3">Kelas</th>
+                                <th class="p-3">Skor</th>
+                                <th class="p-3">Benar/Salah</th>
+                                <th class="p-3">Durasi</th>
+                                <th class="p-3">Waktu Kirim</th>
+                            </tr>
+                        </thead>
+                        <tbody id="guru-table-body" class="divide-y divide-slate-100 dark:divide-slate-700"></tbody>
+                    </table>
+                </div>
+
+                <!-- Analisis butir soal -->
+                <div class="bg-white dark:bg-slate-800 rounded-3xl p-6 border border-sky-100 dark:border-slate-700 shadow-xl space-y-4">
+                    <h3 class="text-lg font-black text-slate-800 dark:text-white">Analisis Butir Soal</h3>
+                    <p class="text-xs text-slate-500">Persentase siswa yang menjawab benar pada setiap soal (dari data yang tampil). Merah = di bawah 50%, perlu dibahas ulang.</p>
+                    <div id="guru-item-analysis" class="space-y-2"></div>
+                </div>
+            </div>
+        </section>
+
+    </main>
+
+    <script>
+        /* =====================================================================
+           KONFIGURASI
+           SCRIPT_URL : URL Web App Google Apps Script (berakhiran /exec).
+                        Kosongkan = mode lokal (hasil tidak dikirim ke guru).
+           SHEET_URL  : (opsional) link Google Spreadsheet untuk tombol di dashboard guru.
+           ===================================================================== */
+        const CONFIG = {
+            SCRIPT_URL: 'https://script.google.com/macros/s/AKfycbzFo8vW3uMYKcXnuf_IjuQH5C-CyBlL_KfpEim22DzLTdoxc7_Hj_eXSsRMccB-BAOL/exec',
+            SHEET_URL: 'https://docs.google.com/spreadsheets/d/1TcyM06KhM1YjpA6A1dzskGR_kLjwvzv2_WTuJStPMgo/edit?usp=sharing',
+            // Penilaian benar/salah hanya terjadi saat jawaban dikumpulkan.
+            // false = halaman Hasil TIDAK menampilkan jawaban benar maupun status benar/salah per soal.
+            // true  = halaman Hasil menampilkan review lengkap beserta kunci jawaban.
+            SHOW_ANSWER_KEY: false
+        };
+
+        let currentPage = 'beranda';
+        let audioEnabled = true;
+        let userProgress = {
+            materiUnlocked: [1],
+            gameScore: 0,
+            latihanScore: 0,
+            quizCompleted: false,
+            quizScore: 0,
+            studentName: '',
+            studentClass: '',
+            lastResult: null,   // hasil kuis terakhir (untuk halaman Hasil)
+            outbox: []          // antrean hasil yang belum terkirim ke spreadsheet
+        };
+
+        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+        function playSound(type) {
+            if (!audioEnabled) return;
+            try {
+                if (audioCtx.state === 'suspended') audioCtx.resume();
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                if (type === 'correct') {
+                    osc.frequency.setValueAtTime(523.25, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(659.25, audioCtx.currentTime + 0.15);
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.3);
+                } else if (type === 'wrong') {
+                    osc.frequency.setValueAtTime(220, audioCtx.currentTime);
+                    osc.frequency.exponentialRampToValueAtTime(140, audioCtx.currentTime + 0.2);
+                    gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.3);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.3);
+                } else if (type === 'click') {
+                    osc.frequency.setValueAtTime(400, audioCtx.currentTime);
+                    gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+                    gain.gain.exponentialRampToValueAtTime(0.01, audioCtx.currentTime + 0.08);
+                    osc.start();
+                    osc.stop(audioCtx.currentTime + 0.08);
+                }
+            } catch (e) {}
+        }
+
+        // Escape HTML: wajib untuk semua data buatan pengguna yang masuk ke innerHTML
+        function esc(s) {
+            return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+        }
+
+        function toggleAudio() {
+            audioEnabled = !audioEnabled;
+            const icon = document.getElementById('audio-icon');
+            icon.className = audioEnabled ? "fa-solid fa-volume-high" : "fa-solid fa-volume-xmark text-rose-500";
+        }
+
+        function toggleDarkMode() {
+            document.documentElement.classList.toggle('dark');
+        }
+
+        function toggleMobileMenu() {
+            document.getElementById('mobile-menu').classList.toggle('hidden');
+        }
+
+        function showPage(pageId) {
+            playSound('click');
+            currentPage = pageId;
+            document.querySelectorAll('.page-view').forEach(el => el.classList.add('hidden'));
+            document.getElementById(`page-${pageId}`).classList.remove('hidden');
+
+            document.querySelectorAll('.nav-btn').forEach(btn => {
+                if (btn.id === 'nav-guru') return;
+                btn.className = "nav-btn px-3.5 py-2 text-sm font-bold rounded-xl text-slate-600 dark:text-slate-300 hover:bg-white dark:hover:bg-slate-800 transition-all";
+            });
+            const activeNav = document.getElementById(`nav-${pageId}`);
+            if (activeNav && pageId !== 'guru') {
+                activeNav.className = "nav-btn px-3.5 py-2 text-sm font-bold rounded-xl text-sky-700 dark:text-sky-300 bg-white dark:bg-slate-800 shadow-sm transition-all";
+            }
+
+            if (pageId === 'materi') loadModul(1);
+            if (pageId === 'game') initGame();
+            if (pageId === 'latihan') initLatihan();
+            if (pageId === 'kuis' && !quizActive) resetQuizView();
+            if (pageId === 'hasil') checkAndRenderResult();
+            updateGlobalProgress();
+        }
+
+        /* =====================================================================
+           EVALUATOR EKSPRESI (AMAN)
+           Tidak memakai eval()/new Function(): ekspresi dari editor siswa di-tokenisasi
+           dan di-parse sendiri. Mendukung: angka, variabel, teks "..." / '...',
+           operator + - * / % × ÷ dan tanda kurung.
+           ===================================================================== */
+        function tokenizeExpr(src) {
+            const tokens = [];
+            let i = 0;
+            while (i < src.length) {
+                const c = src[i];
+                if (/\s/.test(c)) { i++; continue; }
+
+                if (/[0-9]/.test(c) || (c === '.' && /[0-9]/.test(src[i + 1] || ''))) {
+                    let j = i;
+                    while (j < src.length && /[0-9.]/.test(src[j])) j++;
+                    const txt = src.slice(i, j);
+                    if ((txt.match(/\./g) || []).length > 1) throw new Error(`Angka tidak valid: ${txt}`);
+                    tokens.push({ t: 'num', v: parseFloat(txt) });
+                    i = j;
+                    continue;
+                }
+
+                if (/[A-Za-z_]/.test(c)) {
+                    let j = i;
+                    while (j < src.length && /[A-Za-z0-9_]/.test(src[j])) j++;
+                    tokens.push({ t: 'id', v: src.slice(i, j) });
+                    i = j;
+                    continue;
+                }
+
+                if (c === '"' || c === "'" || c === '“' || c === '”') {
+                    const closers = (c === '“' || c === '”') ? ['”', '"'] : [c];
+                    let j = i + 1;
+                    while (j < src.length && !closers.includes(src[j])) j++;
+                    if (j >= src.length) throw new Error('Tanda kutip belum ditutup');
+                    tokens.push({ t: 'str', v: src.slice(i + 1, j) });
+                    i = j + 1;
+                    continue;
+                }
+
+                if ('+-*/%()'.includes(c)) { tokens.push({ t: 'op', v: c }); i++; continue; }
+                if (c === '×') { tokens.push({ t: 'op', v: '*' }); i++; continue; }
+                if (c === '÷') { tokens.push({ t: 'op', v: '/' }); i++; continue; }
+
+                throw new Error(`Karakter tidak dikenali: "${c}"`);
+            }
+            return tokens;
+        }
+
+        function parseExpr(tokens) {
+            let p = 0;
+            const isOp = (tk, ...vals) => tk && tk.t === 'op' && vals.includes(tk.v);
+
+            function primary() {
+                const tk = tokens[p++];
+                if (!tk) throw new Error('Ekspresi belum lengkap');
+                if (tk.t === 'num' || tk.t === 'str') return { k: 'lit', v: tk.v };
+                if (tk.t === 'id') return { k: 'var', n: tk.v };
+                if (isOp(tk, '(')) {
+                    const e = addsub();
+                    const cl = tokens[p++];
+                    if (!isOp(cl, ')')) throw new Error('Tanda kurung ")" tidak ditemukan');
+                    return e;
+                }
+                if (isOp(tk, '-', '+')) return { k: 'un', o: tk.v, a: primary() };
+                throw new Error(`Simbol tidak diharapkan: "${tk.v}"`);
+            }
+            function muldiv() {
+                let left = primary();
+                while (isOp(tokens[p], '*', '/', '%')) {
+                    const o = tokens[p++].v;
+                    left = { k: 'bin', o, l: left, r: primary() };
+                }
+                return left;
+            }
+            function addsub() {
+                let left = muldiv();
+                while (isOp(tokens[p], '+', '-')) {
+                    const o = tokens[p++].v;
+                    left = { k: 'bin', o, l: left, r: muldiv() };
+                }
+                return left;
+            }
+
+            const tree = addsub();
+            if (p < tokens.length) throw new Error(`Simbol tidak diharapkan: "${tokens[p].v}"`);
+            return tree;
+        }
+
+        function evalNode(n, state) {
+            if (n.k === 'lit') return n.v;
+            if (n.k === 'var') {
+                if (!Object.prototype.hasOwnProperty.call(state, n.n)) {
+                    throw new Error(`Variabel "${n.n}" belum memiliki nilai (belum di-INPUT atau diberi nilai)`);
+                }
+                return state[n.n];
+            }
+            if (n.k === 'un') {
+                const v = evalNode(n.a, state);
+                if (typeof v !== 'number') throw new Error(`Tanda "${n.o}" hanya bisa dipakai pada angka`);
+                return n.o === '-' ? -v : v;
+            }
+            const l = evalNode(n.l, state);
+            const r = evalNode(n.r, state);
+            if (n.o === '+' && (typeof l === 'string' || typeof r === 'string')) return String(l) + String(r);
+            if (typeof l !== 'number' || typeof r !== 'number') {
+                throw new Error(`Operator "${n.o}" hanya bisa dipakai pada angka (ada teks yang ikut dihitung)`);
+            }
+            switch (n.o) {
+                case '+': return l + r;
+                case '-': return l - r;
+                case '*': return l * r;
+                case '/': if (r === 0) throw new Error('Pembagian dengan nol'); return l / r;
+                case '%': if (r === 0) throw new Error('Sisa bagi dengan nol'); return l % r;
+            }
+            throw new Error('Operator tidak dikenali');
+        }
+
+        function cleanValue(v) {
+            return typeof v === 'number' ? parseFloat(v.toPrecision(12)) : v;   // 0.1+0.2 -> 0.3
+        }
+
+        function evalExpr(expr, state) {
+            return cleanValue(evalNode(parseExpr(tokenizeExpr(expr)), state));
+        }
+
+        // Mengganti nama variabel dengan nilainya, untuk jejak "luas ← 5 * 5 = 25"
+        function substitute(expr, state) {
+            return expr.replace(/[A-Za-z_]\w*/g, m => (Object.prototype.hasOwnProperty.call(state, m) ? state[m] : m));
+        }
+
+        const modulData = {
+            1: {
+                title: "MATERI 1 — Apa Itu Pseudocode?",
+                content: `
+                    <div class="space-y-4">
+                        <p class="text-base text-slate-600 dark:text-slate-300 leading-relaxed">
+                            <b>Pseudocode</b> (dibaca: <i>soo-doh-kohd</i>) berasal dari kata <i>pseudo</i> (semu/tiruan) dan <i>code</i> (kode program). Pseudocode adalah cara menuliskan algoritma menggunakan bahasa manusia yang sederhana dan terstruktur menyerupai kode pemrograman sebenarnya.
+                        </p>
+                        <div class="p-4 bg-sky-50 dark:bg-slate-900 rounded-2xl border border-sky-100 dark:border-slate-700 space-y-2">
+                            <h4 class="font-bold text-sky-800 dark:text-sky-300 text-sm">Contoh Kasus: Menghitung Luas Persegi</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-xs font-mono">
+                                <div class="bg-white dark:bg-slate-800 p-3 rounded-xl border">
+                                    <span class="font-bold text-slate-400 block mb-1">Algoritma Kalimat:</span>
+                                    1. Masukkan panjang sisi.<br>
+                                    2. Hitung luas = sisi × sisi.<br>
+                                    3. Tampilkan luas.
+                                </div>
+                                <div class="bg-slate-900 text-sky-300 p-3 rounded-xl border">
+                                    <span class="font-bold text-amber-400 block mb-1">Pseudocode:</span>
+                                    BEGIN<br>
+                                    &nbsp;&nbsp;INPUT sisi<br>
+                                    &nbsp;&nbsp;luas ← sisi * sisi<br>
+                                    &nbsp;&nbsp;OUTPUT luas<br>
+                                    END
+                                </div>
+                            </div>
+                        </div>
+                        <div class="pt-2">
+                            <button onclick="runVisualizerModul1()" class="btn-ifp px-6 py-3 bg-indigo-600 hover:bg-indigo-500 text-white rounded-2xl font-bold text-sm shadow-md">
+                                💡 Lihat Cara Kerjanya (Animasi Step-by-Step)
+                            </button>
+                        </div>
+                        <div id="mod1-step-box" class="hidden p-4 bg-slate-900 text-emerald-400 rounded-2xl font-mono text-xs space-y-1"></div>
+                    </div>
+                `
+            },
+            2: {
+                title: "MATERI 2 — Fungsi Pseudocode",
+                content: `
+                    <div class="space-y-4">
+                        <p class="text-slate-600 dark:text-slate-300 text-sm">Pseudocode memiliki beberapa fungsi utama dalam pengembangan perangkat lunak:</p>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                            <div class="p-4 bg-sky-50 dark:bg-slate-900 rounded-2xl border border-sky-100 dark:border-slate-700 space-y-1">
+                                <h4 class="font-bold text-sky-700 dark:text-sky-300 text-sm">1. Merancang Algoritma</h4>
+                                <p class="text-xs text-slate-500">Membantu menyusun urutan logika berpikir sebelum membuat program.</p>
+                            </div>
+                            <div class="p-4 bg-purple-50 dark:bg-slate-900 rounded-2xl border border-purple-100 dark:border-slate-700 space-y-1">
+                                <h4 class="font-bold text-purple-700 dark:text-purple-300 text-sm">2. Menjelaskan Langkah</h4>
+                                <p class="text-xs text-slate-500">Memudahkan penyampaian alur penyelesaian masalah secara terstruktur.</p>
+                            </div>
+                            <div class="p-4 bg-emerald-50 dark:bg-slate-900 rounded-2xl border border-emerald-100 dark:border-slate-700 space-y-1">
+                                <h4 class="font-bold text-emerald-700 dark:text-emerald-300 text-sm">3. Memudahkan Komunikasi</h4>
+                                <p class="text-xs text-slate-500">Menjadi jembatan komunikasi antar programmer maupun dengan non-programmer.</p>
+                            </div>
+                            <div class="p-4 bg-amber-50 dark:bg-slate-900 rounded-2xl border border-amber-100 dark:border-slate-700 space-y-1">
+                                <h4 class="font-bold text-amber-700 dark:text-amber-300 text-sm">4. Menemukan Kesalahan</h4>
+                                <p class="text-xs text-slate-500">Memudahkan pelacakan logika yang salah (bug) sebelum ditulis ke kode asli.</p>
+                            </div>
+                        </div>
+                    </div>
+                `
+            },
+            3: {
+                title: "MATERI 3 — Algoritma vs Pseudocode",
+                content: `
+                    <div class="space-y-4">
+                        <div class="overflow-x-auto">
+                            <table class="w-full text-left text-sm border-collapse">
+                                <thead>
+                                    <tr class="bg-sky-100 dark:bg-slate-700 text-sky-900 dark:text-sky-200">
+                                        <th class="p-3 rounded-l-xl">Aspek</th>
+                                        <th class="p-3">Algoritma Kalimat</th>
+                                        <th class="p-3 rounded-r-xl">Pseudocode</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-slate-200 dark:divide-slate-700 text-xs">
+                                    <tr>
+                                        <td class="p-3 font-bold">Bahasa</td>
+                                        <td class="p-3">Bahasa sehari-hari penuh</td>
+                                        <td class="p-3 font-mono text-sky-600">Mirip struktur pemrograman</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="p-3 font-bold">Aturan</td>
+                                        <td class="p-3">Bebas & Fleksibel</td>
+                                        <td class="p-3 font-mono text-sky-600">Menggunakan kata kunci (BEGIN, INPUT, OUTPUT, END)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="p-4 bg-amber-50 dark:bg-slate-900 rounded-2xl border border-amber-200 dark:border-slate-700 space-y-3">
+                            <h4 class="font-bold text-amber-800 dark:text-amber-300 text-sm">❓ Kuis Cepat: Mana yang merupakan Pseudocode?</h4>
+                            <div class="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                                <button onclick="checkMiniQuiz(false)" class="p-3 bg-white dark:bg-slate-800 border rounded-xl text-left text-xs">
+                                    <b>Option A:</b><br>Masukkan nama lalu tampilkan nama ke layar.
+                                </button>
+                                <button onclick="checkMiniQuiz(true)" class="p-3 bg-white dark:bg-slate-800 border rounded-xl text-left text-xs font-mono">
+                                    <b>Option B:</b><br>BEGIN<br>&nbsp;&nbsp;INPUT nama<br>&nbsp;&nbsp;OUTPUT nama<br>END
+                                </button>
+                            </div>
+                            <div id="mini-quiz-feedback" class="hidden text-xs font-bold"></div>
+                        </div>
+                    </div>
+                `
+            },
+            4: {
+                title: "MATERI 4 — Struktur Dasar Pseudocode",
+                content: `
+                    <div class="space-y-4">
+                        <p class="text-sm text-slate-600 dark:text-slate-300">Klik setiap bagian diagram di bawah ini untuk melihat penjelasannya!</p>
+                        <div class="flex flex-col items-center space-y-2 max-w-sm mx-auto font-mono text-xs">
+                            <div onclick="showDiagramDetail('BEGIN')" class="w-full p-3 bg-sky-500 text-white text-center font-bold rounded-xl cursor-pointer hover:scale-105 transition-all shadow">BEGIN</div>
+                            <i class="fa-solid fa-arrow-down text-slate-400"></i>
+                            <div onclick="showDiagramDetail('INPUT')" class="w-full p-3 bg-indigo-500 text-white text-center font-bold rounded-xl cursor-pointer hover:scale-105 transition-all shadow">INPUT</div>
+                            <i class="fa-solid fa-arrow-down text-slate-400"></i>
+                            <div onclick="showDiagramDetail('PROCESS')" class="w-full p-3 bg-purple-500 text-white text-center font-bold rounded-xl cursor-pointer hover:scale-105 transition-all shadow">PROCESS (Perhitungan)</div>
+                            <i class="fa-solid fa-arrow-down text-slate-400"></i>
+                            <div onclick="showDiagramDetail('OUTPUT')" class="w-full p-3 bg-emerald-500 text-white text-center font-bold rounded-xl cursor-pointer hover:scale-105 transition-all shadow">OUTPUT</div>
+                            <i class="fa-solid fa-arrow-down text-slate-400"></i>
+                            <div onclick="showDiagramDetail('END')" class="w-full p-3 bg-rose-500 text-white text-center font-bold rounded-xl cursor-pointer hover:scale-105 transition-all shadow">END</div>
+                        </div>
+                        <div id="diagram-detail-box" class="p-4 bg-sky-50 dark:bg-slate-900 rounded-2xl border border-sky-100 dark:border-slate-700 text-xs font-bold text-sky-800 dark:text-sky-300 text-center">
+                            Pilih salah satu bagian diagram di atas!
+                        </div>
+                    </div>
+                `
+            },
+            5: {
+                title: "MATERI 5 — BEGIN dan END",
+                content: `
+                    <div class="space-y-4">
+                        <p class="text-sm text-slate-600 dark:text-slate-300">
+                            Setiap algoritma pseudocode wajib diawali dengan <b>BEGIN</b> (awal) dan diakhiri dengan <b>END</b> (akhir).
+                        </p>
+                        <div class="p-4 bg-slate-900 text-sky-300 rounded-2xl font-mono text-xs space-y-1">
+                            <div><b class="text-yellow-400">BEGIN</b>  ← Menandai program dimulai</div>
+                            <div class="pl-4">OUTPUT "Halo!"</div>
+                            <div><b class="text-rose-400">END</b>    ← Menandai program selesai</div>
+                        </div>
+                        <div class="pt-2">
+                            <button onclick="runBeginEndDemo()" class="btn-ifp px-6 py-3 bg-yellow-400 hover:bg-yellow-300 text-slate-900 rounded-2xl font-bold text-xs">
+                                🚀 Klik untuk Simulasikan Program BEGIN - END
+                            </button>
+                        </div>
+                        <div id="begin-end-output" class="hidden p-3 bg-emerald-100 text-emerald-800 font-bold rounded-xl text-xs"></div>
+                    </div>
+                `
+            },
+            6: {
+                title: "MATERI 6 — INPUT dan OUTPUT",
+                content: `
+                    <div class="space-y-4">
+                        <p class="text-sm text-slate-600 dark:text-slate-300">
+                            <b>INPUT</b> digunakan untuk menerima data dari pengguna, sedangkan <b>OUTPUT</b> digunakan untuk menampilkan hasil data ke layar.
+                        </p>
+                        <div class="p-6 bg-slate-900 text-white rounded-3xl space-y-4">
+                            <h4 class="font-bold text-sky-400 text-sm">Simulasi Interaktif INPUT & OUTPUT:</h4>
+                            <div class="space-y-2 text-xs">
+                                <label class="text-slate-400">Masukkan Namamu (INPUT):</label>
+                                <input type="text" id="sandbox-name-input" class="w-full p-3 bg-slate-950 border border-slate-700 rounded-xl text-white font-mono focus:outline-none focus:border-sky-500" placeholder="Ketik nama di sini...">
+                            </div>
+                            <button onclick="runSandboxIO()" class="btn-ifp px-5 py-2.5 bg-emerald-500 hover:bg-emerald-400 text-white rounded-xl text-xs font-bold">
+                                JALANKAN PROGRAM (OUTPUT)
+                            </button>
+                            <div id="sandbox-output-box" class="hidden p-3 bg-slate-950 border border-emerald-500/50 rounded-xl text-emerald-400 font-mono text-xs"></div>
+                        </div>
+                    </div>
+                `
+            }
+        };
+
+        function loadModul(id) {
+            playSound('click');
+            const data = modulData[id];
+            if (!data) return;
+
+            document.querySelectorAll('.mod-btn').forEach((btn, idx) => {
+                if (idx + 1 === id) {
+                    btn.className = "mod-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-sky-500 text-white shadow";
+                } else {
+                    btn.className = "mod-btn px-4 py-2.5 rounded-xl text-sm font-bold bg-slate-100 dark:bg-slate-700 text-slate-700 dark:text-slate-300";
+                }
+            });
+
+            const box = document.getElementById('materi-display-box');
+            box.innerHTML = `
+                <h2 class="text-2xl font-extrabold text-slate-800 dark:text-white border-b border-sky-100 dark:border-slate-700 pb-3">${data.title}</h2>
+                ${data.content}
+            `;
+            updateGlobalProgress();
+        }
+
+        let mod1Timer = null;
+        function runVisualizerModul1() {
+            playSound('click');
+            clearInterval(mod1Timer);                       // cegah dua timer bila tombol diklik berulang
+            const box = document.getElementById('mod1-step-box');
+            box.classList.remove('hidden');
+            box.innerHTML = "Memulai eksekusi...";
+
+            // Nilai contoh diambil dari sumber yang sama dengan halaman Contoh (Contoh 2)
+            const sisi = demoPrograms[2].fields[0].def;
+            const luas = evalExpr('sisi * sisi', { sisi: sisi });
+
+            const steps = [
+                "1. [BEGIN] Program diinisialisasi.",
+                `2. [INPUT sisi] Menerima data masukan sisi = ${sisi} (nilai contoh).`,
+                `3. [PROCESS] Menghitung luas ← ${sisi} × ${sisi} = ${luas}.`,
+                `4. [OUTPUT luas] Menampilkan hasil ${luas} ke layar.`,
+                "5. [END] Program selesai dilaksanakan."
+            ];
+
+            let idx = 0;
+            mod1Timer = setInterval(() => {
+                if (idx < steps.length) {
+                    box.innerHTML += `<br>${steps[idx]}`;
+                    idx++;
+                } else {
+                    clearInterval(mod1Timer);
+                }
+            }, 600);
+        }
+
+        function checkMiniQuiz(isCorrect) {
+            const fb = document.getElementById('mini-quiz-feedback');
+            fb.classList.remove('hidden');
+            if (isCorrect) {
+                playSound('correct');
+                fb.className = "p-3 rounded-xl bg-emerald-100 text-emerald-800 text-xs font-bold";
+                fb.innerHTML = "✅ BENAR! Option B menggunakan struktur baku kata kunci (BEGIN, INPUT, OUTPUT, END).";
+            } else {
+                playSound('wrong');
+                fb.className = "p-3 rounded-xl bg-rose-100 text-rose-800 text-xs font-bold";
+                fb.innerHTML = "❌ BELUM TEPAT. Option A adalah algoritma bahasa kalimat deskriptif biasa.";
+            }
+        }
+
+        function showDiagramDetail(part) {
+            playSound('click');
+            const box = document.getElementById('diagram-detail-box');
+            const details = {
+                'BEGIN': 'BEGIN: Kata kunci wajib untuk menandai awal mula jalannya algoritma.',
+                'INPUT': 'INPUT: Digunakan untuk menerima data masukan dari pengguna/perangkat.',
+                'PROCESS': 'PROCESS: Menjalankan perhitungan aritmatika atau manipulasi data.',
+                'OUTPUT': 'OUTPUT: Menampilkan hasil informasi keluaran ke layar.',
+                'END': 'END: Kata kunci penutup yang menandai akhir dari algoritma.'
+            };
+            box.innerHTML = details[part];
+        }
+
+        function runBeginEndDemo() {
+            playSound('correct');
+            const out = document.getElementById('begin-end-output');
+            out.classList.remove('hidden');
+            out.innerHTML = "▶ Program berjalan: Menampilkan 'Halo!' di layar lalu berhenti (END).";
+        }
+
+        function runSandboxIO() {
+            const name = document.getElementById('sandbox-name-input').value.trim() || "Siswa Class IX";
+            playSound('correct');
+            const box = document.getElementById('sandbox-output-box');
+            box.classList.remove('hidden');
+            box.innerHTML = `> Halo, ${esc(name)}! Selamat belajar pseudocode.`;
+        }
+
+        /* ====================== HALAMAN CONTOH: EKSEKUSI BERBASIS DATA ======================
+           Setiap contoh didefinisikan sebagai: field input (nilai bawaan boleh diubah siswa) + program.
+           Output DIHITUNG dari program, bukan ditulis langsung. Indeks `prog` sejajar dengan
+           id baris di HTML (demoN-line1, demoN-line2, ...). */
+        const demoPrograms = {
+            1: {
+                fields: [{ v: 'nama', type: 'text', def: 'Andi' }],
+                prog: [
+                    { op: 'BEGIN' },
+                    { op: 'INPUT', v: 'nama' },
+                    { op: 'OUTPUT', e: 'nama' },
+                    { op: 'END' }
+                ]
+            },
+            2: {
+                fields: [{ v: 'sisi', type: 'number', def: 5 }],
+                prog: [
+                    { op: 'BEGIN' },
+                    { op: 'INPUT', v: 'sisi' },
+                    { op: 'ASSIGN', v: 'luas', e: 'sisi * sisi' },
+                    { op: 'OUTPUT', e: 'luas' },
+                    { op: 'END' }
+                ]
+            },
+            3: {
+                fields: [{ v: 'a', type: 'number', def: 7 }, { v: 'b', type: 'number', def: 8 }],
+                prog: [
+                    { op: 'BEGIN' },
+                    { op: 'INPUT', v: 'a' },
+                    { op: 'INPUT', v: 'b' },
+                    { op: 'ASSIGN', v: 'hasil', e: 'a + b' },
+                    { op: 'OUTPUT', e: 'hasil' },
+                    { op: 'END' }
+                ]
+            },
+            4: {
+                fields: [{ v: 'panjang', type: 'number', def: 10 }, { v: 'lebar', type: 'number', def: 5 }],
+                prog: [
+                    { op: 'BEGIN' },
+                    { op: 'INPUT', v: 'panjang' },
+                    { op: 'INPUT', v: 'lebar' },
+                    { op: 'ASSIGN', v: 'keliling', e: '2 * (panjang + lebar)' },
+                    { op: 'OUTPUT', e: 'keliling' },
+                    { op: 'END' }
+                ]
+            }
+        };
+
+        const demoTimers = {};
+
+        function initDemoInputs() {
+            Object.keys(demoPrograms).forEach(id => {
+                const box = document.getElementById(`demo${id}-inputs`);
+                if (!box) return;
+                box.innerHTML = '';
+                demoPrograms[id].fields.forEach(f => {
+                    const wrap = document.createElement('label');
+                    wrap.className = 'flex items-center gap-1.5 text-xs font-mono font-bold text-slate-600 dark:text-slate-300';
+                    wrap.appendChild(document.createTextNode(f.v + ' ='));
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.id = `demo${id}-in-${f.v}`;
+                    input.value = String(f.def);
+                    input.autocomplete = 'off';
+                    input.inputMode = f.type === 'number' ? 'decimal' : 'text';
+                    input.maxLength = 30;
+                    input.className = 'w-24 px-2.5 py-1.5 bg-sky-50 dark:bg-slate-900 border border-sky-200 dark:border-slate-700 rounded-lg text-xs text-slate-800 dark:text-white focus:outline-none focus:border-sky-500';
+                    wrap.appendChild(input);
+                    box.appendChild(wrap);
+                });
+            });
+        }
+
+        function demoError(id, msg) {
+            const traceEl = document.getElementById(`demo${id}-trace`);
+            traceEl.innerHTML = '';
+            const d = document.createElement('div');
+            d.className = 'text-rose-500 font-bold';
+            d.textContent = msg;
+            traceEl.appendChild(d);
+            playSound('wrong');
+        }
+
+        function runDemo(id) {
+            playSound('click');
+            clearInterval(demoTimers[id]);              // cegah dua timer bila tombol diklik berulang
+
+            const { fields, prog } = demoPrograms[id];
+            const outEl = document.getElementById(`demo${id}-output`);
+            const traceEl = document.getElementById(`demo${id}-trace`);
+            outEl.innerText = 'Output: -';
+            traceEl.innerHTML = '';
+            prog.forEach((_, i) => {
+                const el = document.getElementById(`demo${id}-line${i + 1}`);
+                if (el) el.classList.remove('active-line');
+            });
+
+            // Baca & validasi nilai INPUT dari siswa
+            const inputs = {};
+            for (const f of fields) {
+                const raw = document.getElementById(`demo${id}-in-${f.v}`).value.trim();
+                if (raw === '') { demoError(id, `Nilai untuk "${f.v}" tidak boleh kosong.`); return; }
+                if (f.type === 'number') {
+                    const num = Number(raw.replace(',', '.'));
+                    if (!isFinite(num)) { demoError(id, `Nilai untuk "${f.v}" harus berupa angka.`); return; }
+                    inputs[f.v] = num;
+                } else {
+                    inputs[f.v] = raw;
+                }
+            }
+
+            const state = Object.create(null);
+            let pc = 0;
+            demoTimers[id] = setInterval(() => {
+                prog.forEach((_, i) => {
+                    const el = document.getElementById(`demo${id}-line${i + 1}`);
+                    if (el) el.classList.remove('active-line');
+                });
+
+                const ins = prog[pc];
+                const lineEl = document.getElementById(`demo${id}-line${pc + 1}`);
+                if (lineEl) lineEl.classList.add('active-line');
+
+                let note = '';
+                try {
+                    if (ins.op === 'INPUT') {
+                        state[ins.v] = inputs[ins.v];
+                        note = `${ins.v} ← ${state[ins.v]}   (nilai input)`;
+                    } else if (ins.op === 'ASSIGN') {
+                        const val = evalExpr(ins.e, state);
+                        note = `${ins.v} ← ${substitute(ins.e, state)} = ${val}`;
+                        state[ins.v] = val;
+                    } else if (ins.op === 'OUTPUT') {
+                        const val = evalExpr(ins.e, state);
+                        note = `Tampilkan: ${val}`;
+                        outEl.innerText = `Output: ${val}`;
+                    }
+                } catch (err) {
+                    clearInterval(demoTimers[id]);
+                    demoError(id, `Kesalahan: ${err.message}`);
+                    return;
+                }
+
+                if (note) {
+                    const d = document.createElement('div');
+                    d.textContent = note;
+                    traceEl.appendChild(d);
+                }
+
+                pc++;
+                if (pc >= prog.length) {
+                    clearInterval(demoTimers[id]);
+                    playSound('correct');
+                }
+            }, 600);
+        }
+
+        /* ====================== PSEUDOCODE RUNNER (INTERPRETER MINI) ======================
+           Perintah yang dikenali:
+             BEGIN | END
+             INPUT variabel
+             variabel ← ekspresi     (atau: variabel <- ekspresi)
+             OUTPUT ekspresi
+           Baris kosong dan komentar (diawali //) diabaikan. */
+        const RESERVED_WORDS = /^(BEGIN|END|INPUT|OUTPUT)$/i;
+        let sim = null;
+
+        function parseProgram(code) {
+            const errors = [];
+            const prog = [];
+
+            code.split(/\r?\n/).forEach((raw, idx) => {
+                const ln = idx + 1;
+                const line = raw.trim();
+                if (!line || line.startsWith('//')) return;
+                let m;
+
+                if (/^BEGIN$/i.test(line)) {
+                    prog.push({ op: 'BEGIN', ln });
+                } else if (/^END$/i.test(line)) {
+                    prog.push({ op: 'END', ln });
+                } else if ((m = line.match(/^INPUT\s+([A-Za-z_]\w*)$/i))) {
+                    if (RESERVED_WORDS.test(m[1])) errors.push(`Baris ${ln}: "${m[1]}" adalah kata kunci, tidak boleh dipakai sebagai nama variabel.`);
+                    else prog.push({ op: 'INPUT', v: m[1], ln });
+                } else if (/^INPUT\b/i.test(line)) {
+                    errors.push(`Baris ${ln}: format INPUT harus "INPUT namaVariabel", contoh: INPUT sisi.`);
+                } else if (/^OUTPUT$/i.test(line)) {
+                    errors.push(`Baris ${ln}: OUTPUT harus diikuti nilai atau variabel, contoh: OUTPUT luas.`);
+                } else if ((m = line.match(/^OUTPUT\s+(.+)$/i))) {
+                    try {
+                        parseExpr(tokenizeExpr(m[1]));
+                        prog.push({ op: 'OUTPUT', e: m[1], ln });
+                    } catch (err) {
+                        errors.push(`Baris ${ln}: ${err.message}.`);
+                    }
+                } else if ((m = line.match(/^([A-Za-z_]\w*)\s*(?:←|<-)\s*(.+)$/))) {
+                    if (RESERVED_WORDS.test(m[1])) {
+                        errors.push(`Baris ${ln}: "${m[1]}" adalah kata kunci, tidak boleh dipakai sebagai nama variabel.`);
+                    } else {
+                        try {
+                            parseExpr(tokenizeExpr(m[2]));
+                            prog.push({ op: 'ASSIGN', v: m[1], e: m[2], ln });
+                        } catch (err) {
+                            errors.push(`Baris ${ln}: ${err.message}.`);
+                        }
+                    }
+                } else if (/^[A-Za-z_]\w*\s*=/.test(line)) {
+                    errors.push(`Baris ${ln}: untuk memberi nilai gunakan panah ← (atau <-), bukan "=".`);
+                } else {
+                    errors.push(`Baris ${ln}: perintah tidak dikenali: "${line}".`);
+                }
+            });
+
+            if (prog.length === 0) {
+                errors.push('Program kosong. Tulis minimal BEGIN dan END.');
+            } else {
+                if (prog[0].op !== 'BEGIN') errors.push(`Baris ${prog[0].ln}: program harus diawali dengan BEGIN.`);
+                if (prog[prog.length - 1].op !== 'END') errors.push(`Baris ${prog[prog.length - 1].ln}: program harus diakhiri dengan END.`);
+                prog.forEach((ins, i) => {
+                    if (ins.op === 'BEGIN' && i > 0) errors.push(`Baris ${ins.ln}: BEGIN ganda atau salah posisi.`);
+                    if (ins.op === 'END' && i < prog.length - 1) errors.push(`Baris ${ins.ln}: END muncul sebelum program selesai (ada perintah setelah END).`);
+                });
+            }
+            return { prog, errors };
+        }
+
+        function simLog(text, cls) {
+            const box = document.getElementById('sim-console');
+            const d = document.createElement('div');
+            if (cls) d.className = cls;
+            d.textContent = text;
+            box.appendChild(d);
+            box.scrollTop = box.scrollHeight;
+        }
+
+        function hideSimInput() {
+            document.getElementById('sim-input-box').classList.add('hidden');
+        }
+
+        function runSimulasi() {
+            playSound('click');
+            hideSimInput();
+            document.getElementById('sim-console').innerHTML = '';
+
+            const { prog, errors } = parseProgram(document.getElementById('sim-editor').value);
+            if (errors.length) {
+                sim = null;
+                simLog('> Ditemukan kesalahan, program tidak dijalankan:', 'text-slate-400');
+                errors.forEach(e => simLog('✗ ' + e, 'text-rose-400'));
+                playSound('wrong');
+                return;
+            }
+
+            sim = { prog: prog, pc: 0, vars: Object.create(null), waiting: null };
+            simLog('> Program dimulai...', 'text-slate-400');
+            simContinue();
+        }
+
+        function simContinue() {
+            while (sim && sim.pc < sim.prog.length) {
+                const ins = sim.prog[sim.pc];
+                try {
+                    if (ins.op === 'BEGIN') {
+                        sim.pc++;
+                    } else if (ins.op === 'INPUT') {
+                        sim.waiting = ins;
+                        document.getElementById('sim-input-label').textContent = `> INPUT ${ins.v}: masukkan nilai untuk variabel "${ins.v}"`;
+                        document.getElementById('sim-input-box').classList.remove('hidden');
+                        const field = document.getElementById('sim-input-value');
+                        field.value = '';
+                        field.focus();
+                        return;                                  // tunggu siswa mengisi, lanjut di submitSimInput()
+                    } else if (ins.op === 'ASSIGN') {
+                        const val = evalExpr(ins.e, sim.vars);
+                        simLog(`${ins.v} ← ${substitute(ins.e, sim.vars)} = ${val}`, 'text-slate-400');
+                        sim.vars[ins.v] = val;
+                        sim.pc++;
+                    } else if (ins.op === 'OUTPUT') {
+                        const val = evalExpr(ins.e, sim.vars);
+                        simLog(`Output: ${val}`, 'text-emerald-300 font-bold');
+                        sim.pc++;
+                    } else if (ins.op === 'END') {
+                        simLog('> Program selesai dieksekusi (END).', 'text-slate-400');
+                        const names = Object.keys(sim.vars);
+                        if (names.length) {
+                            simLog('Nilai variabel akhir: ' + names.map(n => `${n} = ${sim.vars[n]}`).join(', '), 'text-sky-300');
+                        }
+                        playSound('correct');
+                        sim = null;
+                        return;
+                    }
+                } catch (err) {
+                    simLog(`✗ Kesalahan di baris ${ins.ln}: ${err.message}`, 'text-rose-400');
+                    playSound('wrong');
+                    hideSimInput();
+                    sim = null;
+                    return;
+                }
+            }
+        }
+
+        function submitSimInput() {
+            if (!sim || !sim.waiting) return;
+            const field = document.getElementById('sim-input-value');
+            const raw = field.value.trim();
+            if (raw === '') {
+                simLog('! Nilai tidak boleh kosong.', 'text-amber-400');
+                field.focus();
+                return;
+            }
+            const isNum = /^-?\d+([.,]\d+)?$/.test(raw);
+            const val = isNum ? parseFloat(raw.replace(',', '.')) : raw;
+
+            const ins = sim.waiting;
+            sim.vars[ins.v] = val;
+            sim.waiting = null;
+            sim.pc++;
+            simLog(`${ins.v} ← ${isNum ? val : '"' + val + '"'}   (input)`, 'text-slate-400');
+            field.value = '';
+            hideSimInput();
+            playSound('click');
+            simContinue();
+        }
+
+        function resetSimulasi() {
+            playSound('click');
+            sim = null;
+            document.getElementById('sim-editor').value = "BEGIN\nINPUT nama\nOUTPUT nama\nEND";
+            document.getElementById('sim-console').innerHTML = '<p class="text-slate-500">// Klik ▶ JALANKAN untuk memulai simulasi...</p>';
+            hideSimInput();
+        }
+
+        function petunjukSimulasi() {
+            alert(
+                "Petunjuk Pseudocode Runner:\n" +
+                "1. Awali dengan BEGIN dan akhiri dengan END.\n" +
+                "2. INPUT variabel  → meminta nilai dari kamu. Contoh: INPUT sisi\n" +
+                "3. variabel ← ekspresi  → memberi nilai (boleh ditulis <-). Contoh: luas ← sisi * sisi\n" +
+                "4. OUTPUT ekspresi  → menampilkan hasil. Contoh: OUTPUT luas\n" +
+                "5. Operator: + - * / % dan tanda kurung. Teks ditulis dengan tanda kutip: OUTPUT \"Halo\"\n" +
+                "6. Baris yang diawali // dianggap komentar.\n\n" +
+                "Contoh:\nBEGIN\nINPUT sisi\nluas ← sisi * sisi\nOUTPUT luas\nEND"
+            );
+        }
+
+        const initialGameItems = [
+            { id: 'item-1', text: 'END' },
+            { id: 'item-2', text: 'OUTPUT luas' },
+            { id: 'item-3', text: 'INPUT sisi' },
+            { id: 'item-4', text: 'BEGIN' },
+            { id: 'item-5', text: 'luas ← sisi × sisi' }
+        ];
+        let gameSource = [];
+        let gameTarget = [];
+
+        function initGame() {
+            gameSource = [...initialGameItems];
+            gameTarget = [];
+            renderGame();
+        }
+
+        function renderGame() {
+            const srcBox = document.getElementById('game-source-container');
+            const tgtBox = document.getElementById('game-target-container');
+
+            srcBox.innerHTML = '';
+            tgtBox.innerHTML = '';
+
+            gameSource.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = "p-3 bg-white dark:bg-slate-800 border rounded-xl font-mono text-xs font-bold text-sky-600 shadow-sm cursor-pointer hover:bg-sky-50";
+                div.innerText = item.text;
+                div.onclick = () => moveToTarget(idx);
+                srcBox.appendChild(div);
+            });
+
+            gameTarget.forEach((item, idx) => {
+                const div = document.createElement('div');
+                div.className = "p-3 bg-emerald-100 dark:bg-slate-800 border border-emerald-300 rounded-xl font-mono text-xs font-bold text-emerald-800 dark:text-emerald-300 shadow-sm cursor-pointer";
+                div.innerText = item.text;
+                div.onclick = () => moveToSource(idx);
+                tgtBox.appendChild(div);
+            });
+        }
+
+        function moveToTarget(idx) {
+            playSound('click');
+            const item = gameSource.splice(idx, 1)[0];
+            gameTarget.push(item);
+            renderGame();
+        }
+
+        function moveToSource(idx) {
+            playSound('click');
+            const item = gameTarget.splice(idx, 1)[0];
+            gameSource.push(item);
+            renderGame();
+        }
+
+        function checkGameOrder() {
+            const correctOrder = ['BEGIN', 'INPUT sisi', 'luas ← sisi × sisi', 'OUTPUT luas', 'END'];
+            const userOrder = gameTarget.map(i => i.text);
+
+            const isCorrect = userOrder.length === 5 && userOrder.every((v, i) => v === correctOrder[i]);
+            const fb = document.getElementById('game-feedback');
+            fb.classList.remove('hidden');
+
+            if (isCorrect) {
+                playSound('correct');
+                confetti();
+                fb.className = "p-4 rounded-2xl bg-emerald-100 text-emerald-800 font-bold text-sm text-center";
+                fb.innerText = "🎉 HEBAT! Urutan pseudocode kamu benar sempurna.";
+                document.getElementById('game-score').innerText = "100";
+            } else {
+                playSound('wrong');
+                fb.className = "p-4 rounded-2xl bg-rose-100 text-rose-800 font-bold text-sm text-center";
+                fb.innerText = "💡 Coba periksa kembali urutan langkahnya dari BEGIN hingga END.";
+            }
+        }
+
+        function resetGame() {
+            playSound('click');
+            document.getElementById('game-feedback').classList.add('hidden');
+            initGame();
+        }
+
+        const latihanData = [
+            { q: "1. Pseudocode merupakan cara menuliskan algoritma menggunakan bahasa yang menyerupai...", opts: ["Bahasa Pemrograman", "Bahasa Isyarat", "Bahasa Mesin Binary", "Gambar Saja"], ans: 0, exp: "Pseudocode ditulis menyerupai struktur kode pemrograman agar mudah dipahami manusia." },
+            { q: "2. Kata kunci yang digunakan untuk menandai awal mula algoritma pseudocode adalah...", opts: ["START", "BEGIN", "OPEN", "INIT"], ans: 1, exp: "BEGIN secara umum digunakan untuk menandai awal mula algoritma." },
+            { q: "3. Manakah perintah yang digunakan untuk menerima data masukan dari pengguna?", opts: ["OUTPUT", "PRINT", "INPUT", "WRITE"], ans: 2, exp: "INPUT digunakan untuk menerima data masukan." },
+            { q: "4. Perintah OUTPUT berguna untuk...", opts: ["Menerima data", "Menampilkan hasil", "Mengapus variabel", "Mengakhiri kode"], ans: 1, exp: "OUTPUT berfungsi menampilkan informasi hasil keluaran." },
+            { q: "5. Akhir dari suatu algoritma pseudocode ditandai dengan kata kunci...", opts: ["FINISH", "STOP", "END", "EXIT"], ans: 2, exp: "END menandai penutupan batas algoritma." },
+            { q: "6. Simbol panah '←' dalam baris pseudocode 'luas ← sisi * sisi' berarti...", opts: ["Pemberian nilai (Assignment)", "Lebih kecil dari", "Sama dengan perbandingan", "Pengurangan"], ans: 0, exp: "Panah kearah kiri menunjukkan proses perhitungan/pemberian nilai ke variabel." },
+            { q: "7. Benar atau Salah: Pseudocode harus memiliki aturan titik koma yang sangat kaku seperti bahasa pemrograman asli.", opts: ["Benar", "Salah"], ans: 1, exp: "Pseudocode bersifat fleksibel dan tidak kaku dalam sintaks dibanding bahasa pemrograman asli." },
+            { q: "8. Manakah urutan struktur dasar pseudocode yang tepat?", opts: ["END -> PROCESS -> BEGIN", "BEGIN -> INPUT -> PROCESS -> OUTPUT -> END", "INPUT -> BEGIN -> END", "OUTPUT -> PROCESS -> INPUT"], ans: 1, exp: "Urutan logis adalah BEGIN, INPUT, PROCESS, OUTPUT, END." },
+            { q: "9. Apa kegunaan utama dari pseudocode bagi seorang programmer?", opts: ["Membuat komputer berjalan cepat", "Merancang alur logika sebelum menulis kode asli", "Mengganti fungsi harddisk", "Menghapus bug otomatis"], ans: 1, exp: "Pseudocode menjadi cetak biru perancangan logika sebelum koding." },
+            { q: "10. Baris perintah: OUTPUT 'Halo' akan menghasilkan keluaran berupa...", opts: ["Input angka", "Teks 'Halo' di layar", "Error", "Proses matematika"], ans: 1, exp: "Perintah OUTPUT menampilkan nilai atau teks yang diberikan." }
+        ];
+
+        function initLatihan() {
+            const container = document.getElementById('latihan-questions-container');
+            container.innerHTML = '';
+
+            latihanData.forEach((q, qIdx) => {
+                const card = document.createElement('div');
+                card.className = "bg-white dark:bg-slate-800 p-6 rounded-3xl border border-sky-100 dark:border-slate-700 shadow-md space-y-3";
+
+                let optionsHtml = '';
+                q.opts.forEach((opt, oIdx) => {
+                    optionsHtml += `
+                        <button onclick="answerLatihan(${qIdx}, ${oIdx})" id="lat-${qIdx}-opt-${oIdx}" class="w-full text-left p-3 rounded-xl border border-sky-100 dark:border-slate-700 text-xs font-semibold hover:bg-sky-50 dark:hover:bg-slate-700 transition-all">
+                            ${opt}
+                        </button>
+                    `;
+                });
+
+                card.innerHTML = `
+                    <h3 class="font-bold text-slate-800 dark:text-white text-sm">${q.q}</h3>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2">${optionsHtml}</div>
+                    <div id="lat-fb-${qIdx}" class="hidden p-3 rounded-xl text-xs font-bold"></div>
+                `;
+                container.appendChild(card);
+            });
+        }
+
+        function answerLatihan(qIdx, oIdx) {
+            const q = latihanData[qIdx];
+            const fb = document.getElementById(`lat-fb-${qIdx}`);
+            fb.classList.remove('hidden');
+
+            if (oIdx === q.ans) {
+                playSound('correct');
+                fb.className = "p-3 rounded-xl bg-emerald-100 text-emerald-800 text-xs font-bold";
+                fb.innerHTML = `✅ BENAR! ${q.exp}`;
+            } else {
+                playSound('wrong');
+                fb.className = "p-3 rounded-xl bg-rose-100 text-rose-800 text-xs font-bold";
+                fb.innerHTML = `❌ BELUM TEPAT! ${q.exp}`;
+            }
+        }
+
+        /* ====================== KUIS AKHIR ======================
+           PENTING: urutan & kunci `ans` harus identik dengan KEY di Code.gs
+           (skor dihitung ulang di server dari array jawaban siswa). */
+        const quizData = [
+            { q: "1. Apa pengertian paling tepat dari pseudocode?", opts: ["Kode biner komputer", "Cara menuliskan algoritma menggunakan bahasa sederhana menyerupai kode pemrograman", "Bahasa Inggris formal", "Diagram gambar alir"], ans: 1 },
+            { q: "2. Kata kunci utama yang menandai AWAL dan AKHIR pseudocode secara berurutan adalah...", opts: ["START dan FINISH", "OPEN dan CLOSE", "BEGIN dan END", "INIT dan EXIT"], ans: 2 },
+            { q: "3. Perintah manakah yang digunakan untuk meminta data masukan dari pengguna?", opts: ["PRINT", "OUTPUT", "INPUT", "WRITE"], ans: 2 },
+            { q: "4. Perintah manakah yang digunakan untuk menampilkan nilai hasil ke layar?", opts: ["INPUT", "GET", "READ", "OUTPUT"], ans: 3 },
+            { q: "5. Di bawah ini yang merupakan keuntungan menggunakan pseudocode adalah...", opts: ["Mudah dipahami manusia dan merancang logika", "Dapat langsung dijalankan komputer tanpa dikompilasi", "Menghapus virus komputer", "Mempercepat daya RAM"], ans: 0 },
+            { q: "6. Perhatikan baris: 'luas ← 10 * 5'. Apa makna dari simbol panah '←'?", opts: ["Membandingkan apakah sama", "Memasukkan hasil perkalian ke variabel luas", "Menghapus nilai luas", "Menampilkan nilai ke layar"], ans: 1 },
+            { q: "7. Manakah bagian yang merupakan struktur PROCESS dalam pseudocode?", opts: ["INPUT a", "BEGIN", "hasil ← a + b", "END"], ans: 2 },
+            { q: "8. Manakah penulisan pseudocode menampilkan nama yang benar?", opts: ["BEGIN -> INPUT nama -> OUTPUT nama -> END", "BEGIN -> END", "OUTPUT -> INPUT", "INPUT -> OUTPUT"], ans: 0 },
+            { q: "9. Mengapa pseudocode bukan merupakan bahasa pemrograman resmi?", opts: ["Karena menggunakan bahasa Inggris", "Karena tidak memiliki sintaks kaku dan tidak bisa dikompilasi langsung oleh komputer", "Karena dibuat siswa SMP", "Karena berwarna hitam putih"], ans: 1 },
+            { q: "10. Apa fungsi dari bagian BEGIN dalam suatu pseudocode?", opts: ["Menandai batas akhir program", "Menandai titik awal eksekusi algoritma", "Menerima input teks", "Melakukan perhitungan"], ans: 1 },
+            { q: "11. Perhatikan pseudocode: BEGIN -> INPUT p -> INPUT l -> L ← p * l -> OUTPUT L -> END. Jika p=4 dan l=3, berapa keluaran L?", opts: ["7", "12", "1", "43"], ans: 1 },
+            { q: "12. Manakah di bawah ini yang BUKAN merupakan kata kunci baku dalam pseudocode?", opts: ["BEGIN", "INPUT", "OUTPUT", "MAKANAN"], ans: 3 },
+            { q: "13. Dalam pseudocode, data yang dimasukkan melalui INPUT diproses dan disimpan di dalam...", opts: ["Variabel", "Monitor", "Keyboard", "Kabel"], ans: 0 },
+            { q: "14. Langkah sistematis penyelesaian masalah yang menjadi dasar pembuatan pseudocode disebut...", opts: ["Hardware", "Software", "Algoritma", "Database"], ans: 2 },
+            { q: "15. Apa keluaran dari pseudocode: BEGIN -> INPUT x -> OUTPUT x + 2 -> END, jika dimasukkan angka x = 5?", opts: ["52", "7", "3", "10"], ans: 1 }
+        ];
+
+        const OPT_LETTERS = ['A', 'B', 'C', 'D'];
+
+        let quizIndex = 0;
+        let quizCorrect = 0;
+        let quizAnswers = [];       // quizAnswers[i] = indeks opsi yang dipilih pada soal i
+        let quizStartTime = 0;
+        let quizActive = false;
+        let currentStudentName = '';
+        let currentStudentClass = '';
+
+        function newId() {
+            if (window.crypto && crypto.randomUUID) return crypto.randomUUID();
+            return 'id-' + Date.now().toString(36) + '-' + Math.random().toString(36).slice(2, 10);
+        }
+
+        function showStartError(msg) {
+            const el = document.getElementById('kuis-start-error');
+            el.innerText = msg;
+            el.classList.remove('hidden');
+        }
+
+        function resetQuizView() {
+            document.getElementById('kuis-start-card').classList.remove('hidden');
+            document.getElementById('kuis-active-card').classList.add('hidden');
+            document.getElementById('kuis-start-error').classList.add('hidden');
+            document.getElementById('student-name-input').value = userProgress.studentName || '';
+            document.getElementById('student-class-input').value = userProgress.studentClass || '';
+        }
+
+        function startQuiz() {
+            const name = document.getElementById('student-name-input').value.trim().replace(/\s+/g, ' ');
+            const kelas = document.getElementById('student-class-input').value.trim().replace(/\s+/g, ' ');
+            if (name.length < 3) { showStartError('Nama lengkap minimal 3 karakter.'); return; }
+            if (!kelas) { showStartError('Kelas wajib diisi, contoh: IX-A.'); return; }
+
+            playSound('click');
+            document.getElementById('kuis-start-error').classList.add('hidden');
+            currentStudentName = name;
+            currentStudentClass = kelas;
+            userProgress.studentName = name;
+            userProgress.studentClass = kelas;
+            saveProgress();
+
+            document.getElementById('kuis-start-card').classList.add('hidden');
+            document.getElementById('kuis-active-card').classList.remove('hidden');
+
+            quizIndex = 0;
+            quizCorrect = 0;
+            quizAnswers = new Array(quizData.length).fill(undefined);
+            quizStartTime = Date.now();
+            quizActive = true;
+            renderQuizStep();
+        }
+
+        function answeredCount() {
+            return quizAnswers.filter(a => a !== undefined).length;
+        }
+
+        function updateLiveScore() {
+            // Hanya menampilkan kemajuan. Benar/salah TIDAK dinilai selama kuis berlangsung;
+            // penilaian dilakukan sekali saat jawaban dikumpulkan (finishQuiz).
+            document.getElementById('quiz-live-label').innerText = 'TERJAWAB';
+            document.getElementById('quiz-live-score').innerText = `${answeredCount()}/${quizData.length}`;
+        }
+
+        function renderQuizNav() {
+            const nav = document.getElementById('quiz-nav');
+            nav.innerHTML = '';
+            quizData.forEach((_, i) => {
+                const b = document.createElement('button');
+                const answered = quizAnswers[i] !== undefined;
+                const current = i === quizIndex;
+                let cls = 'w-10 h-10 rounded-xl text-xs font-black border transition-all ';
+                cls += answered
+                    ? 'bg-sky-500 border-sky-500 text-white '
+                    : 'bg-white dark:bg-slate-900 border-slate-300 dark:border-slate-600 text-slate-600 dark:text-slate-300 ';
+                if (current) cls += 'ring-2 ring-offset-2 ring-amber-400 dark:ring-offset-slate-800';
+                b.className = cls;
+                b.textContent = i + 1;
+                b.title = answered ? `Soal ${i + 1} (sudah dijawab)` : `Soal ${i + 1} (belum dijawab)`;
+                b.onclick = () => goToQuestion(i);
+                nav.appendChild(b);
+            });
+        }
+
+        function renderQuizStep() {
+            const q = quizData[quizIndex];
+            document.getElementById('quiz-progress-text').innerText = `Soal ${quizIndex + 1} dari ${quizData.length}`;
+            document.getElementById('quiz-student-display').innerText = `Siswa: ${currentStudentName} (${currentStudentClass})`;
+            updateLiveScore();
+            renderQuizNav();
+            document.getElementById('quiz-question-title').innerText = q.q;
+
+            document.getElementById('quiz-prev-btn').disabled = quizIndex === 0;
+            document.getElementById('quiz-next-btn').disabled = quizIndex === quizData.length - 1;
+
+            const optsBox = document.getElementById('quiz-options-box');
+            optsBox.innerHTML = '';
+            const chosen = quizAnswers[quizIndex];
+
+            q.opts.forEach((opt, idx) => {
+                const selected = chosen === idx;
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-4 rounded-2xl border text-sm font-semibold transition-all flex justify-between items-center ' +
+                    (selected
+                        ? 'border-sky-400 bg-sky-100 text-sky-900'
+                        : 'border-sky-100 dark:border-slate-700 bg-sky-50/50 dark:bg-slate-900 hover:bg-sky-100 dark:hover:bg-slate-700');
+                const label = document.createElement('span');
+                label.textContent = `${OPT_LETTERS[idx]}. ${opt}`;
+                const icon = document.createElement('i');
+                icon.className = selected ? 'fa-solid fa-circle-dot text-sky-600' : 'fa-regular fa-circle text-slate-400';
+                btn.appendChild(label);
+                btn.appendChild(icon);
+                btn.onclick = () => selectQuizOpt(idx);
+                optsBox.appendChild(btn);
+            });
+        }
+
+        // Memilih jawaban hanya MENCATAT pilihan. Klik pilihan yang sama sekali lagi = batalkan jawaban.
+        // Tidak ada pengecekan benar/salah di sini.
+        function selectQuizOpt(idx) {
+            playSound('click');
+            quizAnswers[quizIndex] = (quizAnswers[quizIndex] === idx) ? undefined : idx;
+            renderQuizStep();
+        }
+
+        function goToQuestion(i) {
+            if (i < 0 || i >= quizData.length) return;
+            playSound('click');
+            quizIndex = i;
+            renderQuizStep();
+        }
+
+        function prevQuizStep() { goToQuestion(quizIndex - 1); }
+        function nextQuizStep() { goToQuestion(quizIndex + 1); }
+
+        function confirmSubmit() {
+            const blank = [];
+            quizAnswers.forEach((a, i) => { if (a === undefined) blank.push(i + 1); });
+            const msg = blank.length
+                ? `Masih ada ${blank.length} soal belum dijawab (nomor ${blank.join(', ')}). Tetap kumpulkan? Jawaban tidak bisa diubah setelah dikumpulkan.`
+                : 'Kumpulkan jawaban sekarang? Jawaban tidak bisa diubah setelah dikumpulkan.';
+            if (!confirm(msg)) {
+                if (blank.length) goToQuestion(blank[0] - 1);
+                return;
+            }
+            finishQuiz();
+        }
+
+        function finishQuiz() {
+            confetti();
+            quizActive = false;
+
+            const total = quizData.length;
+            const answers = quizAnswers.map(a => (a === undefined ? -1 : a));
+            const correct = answers.filter((a, i) => a === quizData[i].ans).length;
+            const result = {
+                id: newId(),
+                nama: currentStudentName,
+                kelas: currentStudentClass,
+                answers: answers,
+                benar: correct,
+                salah: total - correct,
+                skor: Math.round((correct / total) * 100),
+                durasi: Math.max(0, Math.round((Date.now() - quizStartTime) / 1000)),
+                waktu: new Date().toISOString(),
+                sent: false,
+                error: ''
+            };
+
+            userProgress.quizCompleted = true;
+            userProgress.quizScore = result.skor;
+            userProgress.lastResult = result;
+            userProgress.outbox.push(result);
+            saveProgress();
+
+            showPage('hasil');
+            flushOutbox();
+        }
+
+        /* ====================== HASIL & PENGIRIMAN ====================== */
+        function formatDuration(sec) {
+            const m = Math.floor(sec / 60), s = sec % 60;
+            return `${m}m ${String(s).padStart(2, '0')}d`;
+        }
+
+        function checkAndRenderResult() {
+            const r = userProgress.lastResult;
+            if (!r) {
+                document.getElementById('no-result-msg').classList.remove('hidden');
+                document.getElementById('result-card').classList.add('hidden');
+                return;
+            }
+            document.getElementById('no-result-msg').classList.add('hidden');
+            document.getElementById('result-card').classList.remove('hidden');
+
+            document.getElementById('result-student-name').innerText = r.nama;
+            document.getElementById('result-student-meta').innerText = `Kelas ${r.kelas} • Durasi ${formatDuration(r.durasi)}`;
+            document.getElementById('cert-student-name').innerText = r.nama;
+            document.getElementById('res-score').innerText = `${r.skor}/100`;
+            document.getElementById('res-correct').innerText = r.benar;
+            document.getElementById('res-wrong').innerText = r.salah;
+
+            const badge = document.getElementById('result-badge');
+            if (r.skor >= 90) {
+                badge.innerText = "🌟 Sangat Baik";
+                badge.className = "px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-emerald-100 text-emerald-700";
+            } else if (r.skor >= 80) {
+                badge.innerText = "👍 Baik";
+                badge.className = "px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-sky-100 text-sky-700";
+            } else if (r.skor >= 70) {
+                badge.innerText = "🙂 Cukup";
+                badge.className = "px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-amber-100 text-amber-700";
+            } else {
+                badge.innerText = "💪 Ayo Belajar Lagi";
+                badge.className = "px-4 py-1.5 rounded-full text-xs font-black uppercase tracking-wider bg-rose-100 text-rose-700";
+            }
+
+            renderAnswerReview(r);
+            renderSubmitStatus();
+        }
+
+        function renderAnswerReview(r) {
+            const box = document.getElementById('answer-review');
+            box.innerHTML = '';
+            if (!CONFIG.SHOW_ANSWER_KEY) {
+                const note = document.createElement('div');
+                note.className = 'p-3 rounded-2xl bg-sky-50 border border-sky-200 text-sky-900 text-xs font-semibold';
+                note.innerText = 'Kunci jawaban tidak ditampilkan. Pembahasan soal akan disampaikan oleh gurumu.';
+                box.appendChild(note);
+            }
+            quizData.forEach((q, i) => {
+                const chosen = r.answers[i];
+                const ok = chosen === q.ans;
+                const row = document.createElement('div');
+                const chosenTxt = chosen >= 0 ? `${OPT_LETTERS[chosen]}. ${q.opts[chosen]}` : '(tidak dijawab)';
+                let html;
+                if (CONFIG.SHOW_ANSWER_KEY) {
+                    row.className = `p-3 rounded-2xl border text-xs ${ok ? 'bg-emerald-50 border-emerald-200 text-emerald-900' : 'bg-rose-50 border-rose-200 text-rose-900'}`;
+                    html = `<div class="font-bold">${ok ? '✅' : '❌'} ${esc(q.q)}</div>`;
+                    html += `<div class="mt-1">Jawabanmu: <b>${esc(chosenTxt)}</b></div>`;
+                    if (!ok) html += `<div>Jawaban benar: <b>${esc(OPT_LETTERS[q.ans] + '. ' + q.opts[q.ans])}</b></div>`;
+                } else {
+                    row.className = 'p-3 rounded-2xl border text-xs bg-slate-50 border-slate-200 text-slate-800 dark:bg-slate-900 dark:border-slate-700 dark:text-slate-200';
+                    html = `<div class="font-bold">${esc(q.q)}</div>`;
+                    html += `<div class="mt-1">Jawabanmu: <b>${esc(chosenTxt)}</b></div>`;
+                }
+                row.innerHTML = html;
+                box.appendChild(row);
+            });
+        }
+
+        let sending = false;
+
+        function renderSubmitStatus() {
+            const el = document.getElementById('submit-status');
+            const r = userProgress.lastResult;
+            if (!el || !r) return;
+            const base = "p-3 rounded-2xl text-xs font-bold text-center ";
+            const inOutbox = userProgress.outbox.some(o => o.id === r.id);
+
+            if (!CONFIG.SCRIPT_URL) {
+                el.className = base + "bg-slate-100 text-slate-600 dark:bg-slate-900 dark:text-slate-300";
+                el.innerText = "ℹ️ Mode lokal: hasil tersimpan di perangkat ini dan belum dikirim ke guru (URL spreadsheet belum diatur).";
+            } else if (r.sent) {
+                el.className = base + "bg-emerald-100 text-emerald-800";
+                el.innerText = "✅ Hasil sudah terkirim ke guru.";
+            } else if (sending && inOutbox) {
+                el.className = base + "bg-sky-100 text-sky-800";
+                el.innerText = "⏳ Mengirim hasil ke guru...";
+            } else if (r.error) {
+                el.className = base + "bg-rose-100 text-rose-800";
+                el.innerHTML = `❌ Hasil ditolak server: ${esc(r.error)}`;
+            } else {
+                el.className = base + "bg-amber-100 text-amber-800 space-y-2";
+                el.innerHTML = `⚠️ Hasil belum terkirim (koneksi bermasalah). Jangan tutup halaman ini.<br><button onclick="flushOutbox()" class="mt-2 px-4 py-2 bg-amber-500 hover:bg-amber-400 text-white rounded-xl">KIRIM ULANG</button>`;
+            }
+        }
+
+        async function fetchWithTimeout(url, options, ms) {
+            const ctrl = new AbortController();
+            const t = setTimeout(() => ctrl.abort(), ms);
+            try {
+                return await fetch(url, Object.assign({}, options, { signal: ctrl.signal }));
+            } finally {
+                clearTimeout(t);
+            }
+        }
+
+        // Kirim seluruh antrean secara berurutan. Idempoten: server menolak duplikat berdasarkan `id`,
+        // sehingga aman dikirim ulang jika respons hilang di tengah jalan.
+        async function flushOutbox() {
+            if (sending || !CONFIG.SCRIPT_URL) { renderSubmitStatus(); return; }
+            sending = true;
+            renderSubmitStatus();
+            try {
+                while (userProgress.outbox.length) {
+                    const r = userProgress.outbox[0];
+                    let data;
+                    try {
+                        const res = await fetchWithTimeout(CONFIG.SCRIPT_URL, {
+                            method: 'POST',
+                            // text/plain = "simple request": tidak memicu CORS preflight yang tidak didukung Apps Script
+                            headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+                            body: JSON.stringify({ id: r.id, nama: r.nama, kelas: r.kelas, answers: r.answers, durasi: r.durasi })
+                        }, 20000);
+                        data = await res.json();
+                    } catch (netErr) {
+                        break; // gangguan jaringan: pertahankan antrean, coba lagi nanti
+                    }
+                    userProgress.outbox.shift();
+                    if (data && data.ok) {
+                        r.sent = true;
+                    } else {
+                        r.error = (data && data.error) ? data.error : 'Respons tidak valid';
+                    }
+                    if (userProgress.lastResult && userProgress.lastResult.id === r.id) {
+                        userProgress.lastResult.sent = r.sent;
+                        userProgress.lastResult.error = r.error;
+                    }
+                    saveProgress();
+                }
+            } finally {
+                sending = false;
+                renderSubmitStatus();
+            }
+        }
+
+        window.addEventListener('online', () => { if (userProgress.outbox.length) flushOutbox(); });
+
+        function saveProgress() {
+            try {
+                localStorage.setItem('pseudocode_progress', JSON.stringify(userProgress));
+            } catch (e) {}
+        }
+
+        function updateGlobalProgress() {
+            const bar = document.getElementById('global-progress-bar');
+            let pct = 20;
+            if (userProgress.lastResult) pct = 100;
+            bar.style.width = `${pct}%`;
+        }
+
+        /* ====================== DASHBOARD GURU ====================== */
+        let guruPin = '';
+        let guruRows = [];
+
+        function showGuruError(msg) {
+            const el = document.getElementById('guru-error');
+            el.innerText = msg;
+            el.classList.remove('hidden');
+        }
+
+        async function loadGuruData(isRefresh) {
+            const err = document.getElementById('guru-error');
+            err.classList.add('hidden');
+
+            if (!CONFIG.SCRIPT_URL) {
+                showGuruError('URL Google Apps Script belum diatur pada CONFIG.SCRIPT_URL di kode aplikasi.');
+                return;
+            }
+            if (!isRefresh) guruPin = document.getElementById('guru-pin-input').value;
+            if (!guruPin) { showGuruError('PIN wajib diisi.'); return; }
+
+            const btn = document.getElementById('guru-login-btn');
+            btn.disabled = true;
+            btn.innerText = 'MEMUAT...';
+            try {
+                const url = `${CONFIG.SCRIPT_URL}?action=list&pin=${encodeURIComponent(guruPin)}&_=${Date.now()}`;
+                const res = await fetchWithTimeout(url, { method: 'GET' }, 20000);
+                const data = await res.json();
+                if (!data.ok) {
+                    guruPin = '';
+                    showGuruError(data.error || 'Gagal memuat data.');
+                    document.getElementById('guru-login').classList.remove('hidden');
+                    document.getElementById('guru-dashboard').classList.add('hidden');
+                    return;
+                }
+                guruRows = data.rows || [];
+                document.getElementById('guru-login').classList.add('hidden');
+                document.getElementById('guru-dashboard').classList.remove('hidden');
+                document.getElementById('guru-pin-input').value = '';
+                document.getElementById('guru-updated').innerText = `Diperbarui: ${new Date().toLocaleString('id-ID')}`;
+
+                const link = document.getElementById('guru-sheet-link');
+                if (CONFIG.SHEET_URL) { link.href = CONFIG.SHEET_URL; link.classList.remove('hidden'); }
+
+                fillClassFilter();
+                renderGuruTable();
+            } catch (e) {
+                showGuruError('Tidak dapat terhubung ke server. Periksa koneksi internet atau URL Apps Script.');
+            } finally {
+                btn.disabled = false;
+                btn.innerText = 'MASUK & MUAT DATA';
+            }
+        }
+
+        function guruLogout() {
+            guruPin = '';
+            guruRows = [];
+            document.getElementById('guru-dashboard').classList.add('hidden');
+            document.getElementById('guru-login').classList.remove('hidden');
+        }
+
+        function fillClassFilter() {
+            const sel = document.getElementById('guru-class-filter');
+            const current = sel.value;
+            const classes = [...new Set(guruRows.map(r => r.kelas))].sort();
+            sel.innerHTML = '<option value="">Semua kelas</option>';
+            classes.forEach(c => {
+                const o = document.createElement('option');
+                o.value = c;
+                o.textContent = c;
+                sel.appendChild(o);
+            });
+            sel.value = classes.includes(current) ? current : '';
+        }
+
+        function filteredGuruRows() {
+            const q = document.getElementById('guru-search').value.trim().toLowerCase();
+            const kelas = document.getElementById('guru-class-filter').value;
+            return guruRows.filter(r =>
+                (!kelas || r.kelas === kelas) &&
+                (!q || String(r.nama).toLowerCase().includes(q))
+            );
+        }
+
+        // Sel jawaban di sheet berformat "B✓" / "A✗" / "-"
+        function parseCell(cell) {
+            const s = String(cell || '-');
+            if (s === '-') return { letter: '-', ok: false, blank: true };
+            return { letter: s.charAt(0), ok: s.endsWith('✓'), blank: false };
+        }
+
+        function renderGuruTable() {
+            const rows = filteredGuruRows();
+            const body = document.getElementById('guru-table-body');
+            body.innerHTML = '';
+
+            rows.forEach((r, i) => {
+                const tr = document.createElement('tr');
+                tr.className = 'cursor-pointer hover:bg-sky-50 dark:hover:bg-slate-700';
+                const skorColor = r.skor >= 75 ? 'text-emerald-600' : (r.skor >= 50 ? 'text-amber-600' : 'text-rose-600');
+                tr.innerHTML = `
+                    <td class="p-3">${i + 1}</td>
+                    <td class="p-3 font-bold">${esc(r.nama)}</td>
+                    <td class="p-3">${esc(r.kelas)}</td>
+                    <td class="p-3 font-black ${skorColor}">${esc(r.skor)}</td>
+                    <td class="p-3">${esc(r.benar)} / ${esc(r.salah)}</td>
+                    <td class="p-3">${esc(formatDuration(Number(r.durasi) || 0))}</td>
+                    <td class="p-3">${esc(r.waktu)}</td>`;
+
+                const detail = document.createElement('tr');
+                detail.className = 'hidden';
+                const chips = (r.answers || []).map((c, qi) => {
+                    const p = parseCell(c);
+                    const cls = p.blank ? 'bg-slate-200 text-slate-600' : (p.ok ? 'bg-emerald-100 text-emerald-800' : 'bg-rose-100 text-rose-800');
+                    return `<span class="inline-block m-0.5 px-2 py-1 rounded-lg font-bold ${cls}">S${qi + 1}: ${esc(p.letter)}${p.blank ? '' : (p.ok ? ' ✓' : ' ✗')}</span>`;
+                }).join('');
+                detail.innerHTML = `<td colspan="7" class="p-3 bg-sky-50/60 dark:bg-slate-900">${chips}</td>`;
+                tr.onclick = () => detail.classList.toggle('hidden');
+
+                body.appendChild(tr);
+                body.appendChild(detail);
+            });
+
+            if (!rows.length) {
+                body.innerHTML = '<tr><td colspan="7" class="p-6 text-center text-slate-400">Belum ada data.</td></tr>';
+            }
+
+            const scores = rows.map(r => Number(r.skor) || 0);
+            document.getElementById('gs-count').innerText = rows.length;
+            document.getElementById('gs-avg').innerText = scores.length ? (scores.reduce((a, b) => a + b, 0) / scores.length).toFixed(1) : '0';
+            document.getElementById('gs-max').innerText = scores.length ? Math.max(...scores) : '0';
+            document.getElementById('gs-min').innerText = scores.length ? Math.min(...scores) : '0';
+
+            renderItemAnalysis(rows);
+        }
+
+        function renderItemAnalysis(rows) {
+            const box = document.getElementById('guru-item-analysis');
+            box.innerHTML = '';
+            quizData.forEach((q, qi) => {
+                const answered = rows.filter(r => r.answers && !parseCell(r.answers[qi]).blank);
+                const right = answered.filter(r => parseCell(r.answers[qi]).ok).length;
+                const pct = rows.length ? Math.round((right / rows.length) * 100) : 0;
+                const bar = pct < 50 ? 'bg-rose-500' : (pct < 75 ? 'bg-amber-500' : 'bg-emerald-500');
+                const div = document.createElement('div');
+                div.className = 'text-xs';
+                div.innerHTML = `
+                    <div class="flex justify-between gap-3 mb-1">
+                        <span class="font-semibold truncate">${esc(q.q)}</span>
+                        <span class="font-black shrink-0">${pct}%</span>
+                    </div>
+                    <div class="w-full h-2 rounded-full bg-slate-200 dark:bg-slate-700 overflow-hidden">
+                        <div class="${bar} h-full" style="width:${pct}%"></div>
+                    </div>`;
+                box.appendChild(div);
+            });
+        }
+
+        function csvCell(v) {
+            let s = String(v == null ? '' : v);
+            // Cegah formula injection saat dibuka di Excel/Sheets
+            if (/^[=+\-@\t\r]/.test(s)) s = "'" + s;
+            return '"' + s.replace(/"/g, '""') + '"';
+        }
+
+        function exportGuruCSV() {
+            const rows = filteredGuruRows();
+            const head = ['Waktu', 'Nama', 'Kelas', 'Skor', 'Benar', 'Salah', 'Durasi (detik)'].concat(quizData.map((_, i) => `S${i + 1}`));
+            const lines = [head.map(csvCell).join(',')];
+            rows.forEach(r => {
+                lines.push([r.waktu, r.nama, r.kelas, r.skor, r.benar, r.salah, r.durasi].concat(r.answers || []).map(csvCell).join(','));
+            });
+            const blob = new Blob(['\uFEFF' + lines.join('\r\n')], { type: 'text/csv;charset=utf-8;' });
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `hasil-kuis-pseudocode-${new Date().toISOString().slice(0, 10)}.csv`;
+            document.body.appendChild(a);
+            a.click();
+            a.remove();
+            setTimeout(() => URL.revokeObjectURL(a.href), 1000);
+        }
+
+        window.onload = function() {
+            try {
+                const saved = localStorage.getItem('pseudocode_progress');
+                if (saved) {
+                    const parsed = JSON.parse(saved);
+                    userProgress = Object.assign(userProgress, parsed);
+                    if (!Array.isArray(userProgress.outbox)) userProgress.outbox = [];
+                }
+            } catch (e) {}
+            initDemoInputs();
+            showPage('beranda');
+            if (userProgress.outbox.length) flushOutbox();
+        };
+    </script>
+</body>
+</html>
